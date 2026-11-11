@@ -9,7 +9,8 @@ Per geval:
 - een gerenderd, ingevuld bonformulier (PNG).
 
 Het resultaat, eval/data/cases.jsonl, is volledig op zichzelf: de scoring leest alleen dat bestand, nooit gold.jsonl.
-Bestaande teksten worden niet opnieuw gegenereerd. Na het nalezen zet je "nagelezen" op true.
+Bestaande teksten worden niet opnieuw gegenereerd. Na het nalezen vul je "nagelezen_door" in
+(bv. "claude-code" of de naam van wie las); null betekent nog niet nagelezen.
 """
 
 from __future__ import annotations
@@ -626,7 +627,7 @@ def main() -> None:
         if oud and c["werfbon_id"] not in args.opnieuw:
             c["invoer"] = {"spraak": oud["invoer"]["spraak"]}
             c["generatie"] = oud.get("generatie")
-            c["nagelezen"] = oud.get("nagelezen", False)
+            c["nagelezen_door"] = oud.get("nagelezen_door")
 
     # Hergebruikte (en eventueel met de hand aangepaste) teksten eerst controleren
     fouten = []
@@ -653,13 +654,13 @@ def main() -> None:
             tekst, meta = genereer_spraak(client, c, catalogus, namen, gebruik)
             c["invoer"]["spraak"] = tekst
             c["generatie"] = meta
-            c["nagelezen"] = False
+            c["nagelezen_door"] = None  # nieuwe tekst: opnieuw na te lezen
             schrijf_cases(cases)
             print(f"  {c['case_id']}: ok ({meta['pogingen']} poging(en), {meta['model']})")
     schrijf_cases(cases)
 
     kost = gebruik["input"] / 1e6 * PRIJS_PER_MTOK["input"] + gebruik["output"] / 1e6 * PRIJS_PER_MTOK["output"]
-    niet_nagelezen = [c["case_id"] for c in cases if not c.get("nagelezen")]
+    niet_nagelezen = [c["case_id"] for c in cases if not c.get("nagelezen_door")]
     print(f"\n{len(cases)} gevallen in {CASES.relative_to(REPO)}, bonnen in {BONNEN.relative_to(REPO)}/")
     print(f"Tokens: {gebruik['input']} in, {gebruik['output']} uit (ongeveer ${kost:.2f})")
     print_tellingen([c["invoer"]["spraak"] for c in cases])
