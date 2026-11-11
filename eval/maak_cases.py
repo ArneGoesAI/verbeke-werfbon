@@ -591,6 +591,7 @@ def maak_case(n: int, record: Dict[str, Any]) -> Dict[str, Any]:
         "bron": record["bron"],
         "randgeval": None,
         "deel": "synthetisch",
+        "testdata_probleem": None,  # met de hand in te vullen: waarom dit geval geen eerlijke test is
         "context": copy.deepcopy(record["context"]),
         "gold": copy.deepcopy(record["gold"]),
     }
@@ -656,6 +657,9 @@ def main() -> None:
     bestaand = {c["case_id"]: c for c in lees_jsonl(CASES)} if CASES.exists() else {}
     for c in cases:
         oud = bestaand.get(c["case_id"])
+        if oud:
+            # Een testdata-probleem zit in de gold of de seed, niet in de tekst: ook bij --opnieuw bewaren.
+            c["testdata_probleem"] = oud.get("testdata_probleem")
         if oud and c["werfbon_id"] not in args.opnieuw:
             c["invoer"] = {"spraak": oud["invoer"]["spraak"]}
             c["generatie"] = oud.get("generatie")
