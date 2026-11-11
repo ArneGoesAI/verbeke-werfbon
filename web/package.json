@@ -14,6 +14,7 @@
     "testaccounts": "tsx scripts/testaccounts.ts",
     "test:logins": "tsx scripts/test-logins.ts",
     "test:schermen": "tsx scripts/test-schermen.ts",
+    "test:flow": "tsx scripts/test-flow.ts",
     "opruimen": "tsx scripts/opruimen.ts"
   },
   "dependencies": {

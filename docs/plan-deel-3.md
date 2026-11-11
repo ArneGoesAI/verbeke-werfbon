@@ -1,7 +1,8 @@
 # Stap 8, deel 3: de werfbon-app in `web/`
 
-Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar; van pakket B (delen 5–9) is de code klaar en
-zonder kosten getest, de echte test (API-call en schrijven op live) wacht op akkoord. Zie [Stand](#stand). Dit plan werkt deel 3 uit
+Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
+één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
+spraakopname staan nog open. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -56,9 +57,9 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 4. Inloggen | **Klaar**, met tijdelijke pagina's `/vandaag` en `/administratie` |
 | 5. T1 Vandaag | **Code klaar**, queries nagekeken met `test:schermen`; schermvergelijking in de browser nog te doen |
 | 6. T2 Interventie | **Code klaar**, idem; interventie van een collega onzichtbaar (nagekeken) |
-| 7. Route `POST /api/verwerk` | **Code klaar** met tests (nep-Supabase, nep-`verwerk`); echte call nog niet (wacht op akkoord) |
-| 8. T3 Inspreken en foto-pad | **Code klaar**; echte opname nog niet (kost Voxtral + Haiku, schrijft op live) |
-| 9. T4 Voorstel en Bevestigen | **Code klaar** met tests; volledige flow nog niet (schrijft op live) |
+| 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
+| 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
+| 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
 | 10–11 | Nog niet begonnen |
 
 Gedaan in pakket A, met wat erbij kwam:
@@ -99,6 +100,21 @@ Gedaan in pakket B (code, nog zonder echte call of schrijven op live):
   testaccount, plus RLS op een interventie en opnamepad van een collega. Resultaat 2026-11-12: ALLES OK.
 - `MAX_UREN` staat nu in `lib/verwerking/grenzen.ts`, zodat de browser hem kan gebruiken zonder Ajv en de catalogus
   (met prijzen) mee te laden. Nagekeken in de build: geen `verkoopprijs` in de clientbundels.
+
+Echte test op 2026-11-12, met akkoord (`npm --prefix web run test:flow`, zelfde code als de app, zonder browser):
+- `--stap concept`: foto van testgeval c13-wb501 met de sessie in de bucket, dan `verwerkVerzoek` met de echte
+  afhankelijkheden op interventie 1063. Route 200 in 4,0 s, bon WB-2026-00853 (concept, bron foto, 5 november):
+  1,5 u, 28 km, Temperatuursensor × 1 met citaat, forfait "Automatisch". Gelijk aan de gold van c13.
+  Eén Haiku-call: 6.069 input- en 305 outputtokens, ongeveer $0,001.
+- `--stap bevestig --bon 853`: `bevestigBon` → bon `ingegeven`, conceptfactuur FA-2026-00377 (btw 6%, € 217,
+  de jaarprijs van het contract). Read-only als administratie: totaal = `factuurvoorstel` = som van de lijnen.
+  Waarschuwing "onderdeel op onderhoudsbon, niet aangerekend: OND-SENS × 1", zoals 0003 het wil.
+- `opruimen` droog toont precies die app-data (bon 853, factuur 377, opname 2, één bestand). Nog niet opgeruimd:
+  de data dient straks voor A1 (deel 10).
+- Voor dit script staan de route-afhankelijkheden in `lib/route/afhankelijkheden-kern.ts` en het bevestigen in
+  `lib/schermen/bevestig.ts`, zonder `server-only`; de app gebruikt ze via `afhankelijkheden.ts` en de server action.
+- Niet getest met echte data: een geel vak (c13 had er geen; wel in de unit tests), het spraakpad (Voxtral) en
+  "Opnieuw inspreken" op live.
 
 Afwijkingen en keuzes in pakket B:
 - **Vervangen van een conceptbon**: eerst de nieuwe bon volledig schrijven, pas daarna de oude weg (het plan zei
