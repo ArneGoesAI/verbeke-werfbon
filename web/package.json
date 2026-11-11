@@ -2,21 +2,28 @@
   "name": "verbeke-werfbon-app",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:gevallen": "tsx scripts/test-gevallen.ts"
+    "test:gevallen": "tsx scripts/test-gevallen.ts",
+    "testaccounts": "tsx scripts/testaccounts.ts",
+    "test:logins": "tsx scripts/test-logins.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.8.0",
     "@next/env": "16.4.6",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
     "ajv": "8.20.0",
     "next": "16.4.6",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@types/node": "26.6.6",

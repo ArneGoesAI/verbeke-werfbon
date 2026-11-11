@@ -1,0 +1,50 @@
+.pagina {
+  min-height: 100dvh;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 56px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.merk { display: flex; align-items: center; gap: 16px; }
+.merkTekst { display: flex; flex-direction: column; }
+.naam { font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 34px; letter-spacing: -0.5px; line-height: 1; }
+.ondertitel { font-size: 13px; color: var(--inkt-gedempt); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+.titel { margin: 12px 0 0; font-size: 32px; line-height: 1.1; }
+.formulier { display: flex; flex-direction: column; gap: 18px; }
+.veld { display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 600; color: var(--inkt-zacht); }
+.veld input {
+  height: 56px;
+  padding: 0 16px;
+  border: 1px solid var(--rand);
+  border-radius: 16px;
+  background: var(--kaart);
+  color: var(--inkt);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+}
+.veld input:focus-visible { outline: 3px solid var(--petrol-licht); border-color: var(--petrol); }
+.fout {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--nakijken);
+  color: var(--nakijken-tekst);
+  font-size: 15px;
+  font-weight: 600;
+}
+.knop {
+  height: 56px;
+  border: none;
+  border-radius: 16px;
+  background: var(--warmte);
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.knop:hover { background: var(--warmte-donker); }
+.knop:disabled { opacity: 0.6; cursor: default; }

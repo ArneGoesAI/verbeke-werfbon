@@ -31,6 +31,9 @@ npm --prefix web install                        # Node ≥ 20, versies vastgepin
 npm --prefix web test                           # vitest: kern van de verwerking (gratis)
 npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
+npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
+npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run dev                        # app op localhost:3000
 npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
 ```
 
@@ -81,8 +84,17 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
   `score.py` het scoort. Spraak op tekst (`tekst`) en op eigen opnames (`audio`) in aparte mappen.
   Eigen opnames staan in `eval/data/opnames/` en worden nooit gecommit (een stem is een persoonsgegeven).
 - `.env` staat in de repo-root; `next.config.ts` en het testscript laden ze daar.
-- **Nog niet gebouwd (deel 3):** de route `POST /api/verwerk` met sessie, bucket `werfbon-opnames` en wegschrijven
-  als conceptbon (ontwerp in het plan), de Supabase-sleutels en de schermen.
+- **Supabase** (`web/lib/supabase/`): `browser.ts` en `server.ts` werken met de sessie van de gebruiker, dus RLS uit
+  migratie 0004 bepaalt wat iemand ziet. `dienst.ts` gebruikt `SUPABASE_SECRET_KEY` en passeert RLS: alleen voor de
+  route en, via `dienst-kern.ts`, voor de scripts. `server.ts` en `dienst.ts` importeren `server-only`, zodat de
+  build faalt als ze in een clientcomponent belanden.
+- **Deel 3 in uitvoering** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
+  Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
+  inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
+  `/vandaag` en `/administratie`. Nog niet: de rest van de huisstijl, het opruimscript, de schermen T1–T4 en A1,
+  route `POST /api/verwerk`.
+- `next.config.ts` laadt de root-`.env` met `forceReload`: zonder dat geeft `@next/env` de eerdere lading van `web/`
+  (zonder sleutels) uit de cache terug.
 
 ## Kosten en API-calls
 
@@ -96,7 +108,9 @@ zonder `--droog`) zonder dat de gebruiker erom vraagt, en vermeld daarna de kost
 - Alle data is fictief, maar er komen nooit namen, telefoonnummers of e-mailadressen in de testdata. De controles in
   `export_gold.py` en `maak_cases.py` stoppen bij een treffer; filter niets stil weg.
 - De databaseverbinding is altijd read-only (`default_transaction_read_only = on`).
-- `.env` bevat `ANTHROPIC_API_KEY`, `DATABASE_URL` en `MISTRAL_API_KEY`. Lees het niet en commit het nooit.
+- `.env` bevat `ANTHROPIC_API_KEY`, `DATABASE_URL`, `MISTRAL_API_KEY`, `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `SUPABASE_SECRET_KEY`. Lees het niet en commit het nooit. Alleen de twee
+  `NEXT_PUBLIC_`-waarden mogen in de browser; de secret key nooit.
 
 ## Werkwijze
 

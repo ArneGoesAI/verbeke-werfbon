@@ -1,0 +1,32 @@
+/* Huisstijl uit docs/ontwerp/README.md. Deel 2 vult de bouwstenen verder aan. */
+:root {
+  --warmte: #c2531e;
+  --warmte-donker: #a8441a;
+  --petrol: #1f5662;
+  --petrol-licht: #ddebee;
+  --inkt: #2a2420;
+  --inkt-zacht: #4a3f38;
+  --inkt-gedempt: #6b5f57;
+  --kalk: #faf6f0;
+  --kaart: #ffffff;
+  --rand: #ede4da;
+  --menu: #f3ece3;
+  --nakijken: #fcefd2;
+  --nakijken-tekst: #6e4700;
+  --in-orde: #e2f0e4;
+  --in-orde-tekst: #245332;
+  --automatisch: #f0e8df;
+  --automatisch-tekst: #4a3f38;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--kalk);
+  color: var(--inkt);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 16px;
+}
+
+h1, h2 { font-family: var(--font-fraunces), Georgia, serif; font-weight: 600; }

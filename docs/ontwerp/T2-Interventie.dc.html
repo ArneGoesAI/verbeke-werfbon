@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Interventie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 20px; background: #FAF6F0; color: #2A2420; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; gap: 20px">
+
+<a href="T1-Vandaag.dc.html" style="display: flex; align-items: center; gap: 8px; height: 44px; font-size: 16px; font-weight: 600; color: #4A3F38">
+<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+Vandaag
+</a>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 700; color: #A8441A">08:30 · Herstelling</span>
+<h1 style="margin: 0; font-family: Fraunces, Georgia, serif; font-size: 30px; font-weight: 600; line-height: 1.15">Warmtepomp verwarmt niet</h1>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 20px; background: #FFFFFF; border: 1px solid #EDE4DA">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #6B5F57; text-transform: uppercase; letter-spacing: 1px">Klant</span>
+<span style="font-size: 17px; font-weight: 600">Fam. De Smet</span>
+<span style="font-size: 15px; color: #4A3F38">Kerkstraat 12, Erpe-Mere</span>
+</div>
+<div style="height: 1px; background: #EDE4DA"></div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #6B5F57; text-transform: uppercase; letter-spacing: 1px">Toestel</span>
+<span style="font-size: 17px; font-weight: 600">Panasonic Aquarea 9 kW</span>
+</div>
+<div style="height: 1px; background: #EDE4DA"></div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #6B5F57; text-transform: uppercase; letter-spacing: 1px">Melding</span>
+<span style="font-size: 16px; line-height: 1.45">Verwarmt niet meer, toont een foutcode op het scherm.</span>
+</div>
+</div>
+
+<div style="flex-grow: 1"></div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 0 4px">
+<span style="font-size: 17px; font-weight: 700">Klaar met de interventie?</span>
+<span style="font-size: 15px; line-height: 1.45; color: #4A3F38">Vertel wat je deed: hoe lang, hoeveel kilometer en wat je vervangen hebt. Of fotografeer je papieren bon.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<a href="T3-Inspreken.dc.html" style="height: 64px; border-radius: 18px; background: #C2531E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 18px; font-weight: 700">
+<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"></rect><path d="M5 11 a7 7 0 0 0 14 0 M12 18 v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>
+Bon inspreken
+</a>
+<button type="button" style="height: 64px; border-radius: 18px; border: 2px solid #2A2420; background: transparent; color: #2A2420; display: flex; align-items: center; justify-content: center; gap: 12px; font-family: Figtree, sans-serif; font-size: 18px; font-weight: 600">
+<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8 h3 l2-3 h6 l2 3 h3 v11 h-16 z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"></path><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2.2"></circle></svg>
+Foto van papieren bon
+</button>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
