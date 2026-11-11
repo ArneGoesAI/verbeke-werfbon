@@ -148,10 +148,12 @@ eenmalig voor het genereren van de teksten met Opus.
 
 **Beslisregel, vooraf vastgelegd.** Haiku mag het spraakpad overnemen als:
 
-- het op "factuur juist" hoogstens 1 geval meer fout heeft dan Sonnet
-- het geen enkel verzonnen onderdeel heeft
-- het randgeval met het onbekende onderdeel juist is
-- de fout in euro op de herstellingen niet hoger is dan bij Sonnet
+- het op "factuur juist" hoogstens 1 geval meer fout heeft dan Sonnet. Per geval telt de meerderheid van de
+  herhalingen: een geval is juist als meer dan de helft van de herhalingen juist is
+- het geen enkel verzonnen onderdeel heeft, **over alle herhalingen**: één verzonnen onderdeel in één herhaling is
+  genoeg om te falen. Een verzonnen onderdeel geeft een klacht, ook als het maar af en toe gebeurt
+- het randgeval met het onbekende onderdeel in elke herhaling juist is
+- de fout in euro op de herstellingen gemiddeld niet hoger is dan bij Sonnet
 
 Bij 20 gevallen zie je alleen grote verschillen. Dat is goed genoeg om Haiku uit te sluiten of verder te testen, niet
 om een klein verschil te bewijzen. Bij twijfel breiden we de set uit, en het script werkt op elk aantal gevallen.
