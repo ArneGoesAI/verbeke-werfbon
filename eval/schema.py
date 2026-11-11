@@ -54,7 +54,8 @@ def maak_werfbon_model(catalogus: Catalogus) -> Type[BaseModel]:
         km=(Optional[int], Field(description="Gereden kilometers, of null als er niets over gezegd of geschreven is.")),
         onderdelen=(List[onderdeel], Field(description="Gebruikt materiaal. Geen arbeid, verplaatsing of "
                                                        "onderhoudsforfait: die rekent het systeem zelf.")),
-        opmerking=(str, Field(description="Korte samenvatting van wat er gebeurd is, in het Nederlands.")),
+        opmerking=(str, Field(description="Hoogstens twee zinnen, in de woorden van de technieker: wat er "
+                                          "gebeurd is en wat opgevolgd moet worden.")),
     )
 
 

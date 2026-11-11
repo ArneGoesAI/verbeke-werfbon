@@ -32,7 +32,7 @@ RESULTATEN = REPO / "eval" / "results"
 
 MODELLEN = {"sonnet": "claude-sonnet-5-5", "haiku": "claude-haiku-5-5"}
 PADEN = ("spraak", "foto")
-MAX_TOKENS = 16000
+MAX_TOKENS = 2000  # ruim genoeg voor een bon; stopt een opmerking die blijft doorlopen (zie §4)
 
 
 # ─────────────────────────────────────────────
