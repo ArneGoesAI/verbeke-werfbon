@@ -44,10 +44,14 @@ def normaliseer_tekst(t: str) -> str:
     return " ".join(re.sub(r"[^\w']+", " ", t).split())
 
 
-def invoertekst(case: Dict[str, Any], pad: str) -> str:
-    """Waar een bronzin letterlijk in moet staan: de inspreektekst, of wat er op de bon geschreven staat."""
+def invoertekst(case: Dict[str, Any], pad: str, transcript: Optional[str] = None) -> str:
+    """Waar een bronzin letterlijk in moet staan: de inspreektekst, of wat er op de bon geschreven staat.
+
+    Bij een run op een eigen opname (web/scripts/test-gevallen.ts --invoer audio) ziet het model het transcript van
+    Voxtral, niet de inspreektekst. Dan moet de bronzin in dat transcript staan.
+    """
     if pad == "spraak":
-        return case["invoer"]["spraak"]
+        return transcript if transcript is not None else case["invoer"]["spraak"]
     f = case.get("foto_inhoud") or {}
     return " ".join([f.get("uren", ""), f.get("km", ""), *f.get("materiaal", []), f.get("opmerking", "")])
 
@@ -101,7 +105,7 @@ def beoordeel(run: Dict[str, Any], case: Dict[str, Any], catalogus, werfbon_mode
     model_aantal = {l["code"]: l["aantal"] for l in onderdelen_uit(lijnen)}
     tp = sum((model_onderdelen & gold_onderdelen).values())
     gevonden = [c for c in model_onderdelen if c in gold_onderdelen]
-    tekst = f" {normaliseer_tekst(invoertekst(case, run['pad']))} "
+    tekst = f" {normaliseer_tekst(invoertekst(case, run['pad'], run.get('transcript')))} "
     bron_ok = sum(1 for o in output["onderdelen"]
                   if normaliseer_tekst(o["bronzin"]) and f" {normaliseer_tekst(o['bronzin'])} " in tekst)
 

@@ -71,6 +71,14 @@ Op het fotopad zijn alle drie de configuraties 100% juist.
 - **Volgende stap:** een tiental echte bonnen, zelf ingesproken en met de hand ingevuld, die we één voor één
   bekijken, en dezelfde eval opnieuw in de EU-regio die in productie gebruikt wordt.
 
+## Van eval naar app
+
+De gekozen configuratie draait nu ook in de app ([`web/`](web/), Next.js). Een spraakopname gaat eerst door Voxtral
+(Mistral) naar tekst, een foto gaat rechtstreeks naar Claude. Daarna volgt Haiku 5.5 op effort medium, met exact
+dezelfde prompt en hetzelfde schema als de eval. Die exporteert Python naar de app, zodat ze niet uit elkaar kunnen
+groeien. Een testscript stuurt de gevallen uit de eval door de kern van de app, en `score.py` scoort het resultaat
+zoals een gewone eval-run. De route naar de database en de schermen volgen nog.
+
 ## Meer weten
 
 - Het volledige plan, met alle beslissingen en de redenen erachter: [`docs/eval-plan.md`](docs/eval-plan.md)

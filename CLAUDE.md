@@ -25,9 +25,18 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # Python 3.
 .venv/bin/python eval/run_eval.py --model sonnet --effort low --pad beide --herhaal 3 --uit eval/results/<map>
 .venv/bin/python eval/run_eval.py ... --droog   # toont het verzoek zonder API-call
 .venv/bin/python eval/score.py --resultaten eval/results/<map>
+.venv/bin/python eval/exporteer_voor_app.py     # prompt, schema en catalogus naar web/ (na elke wijziging eraan)
+
+npm --prefix web install                        # Node ≥ 20, versies vastgepind
+npm --prefix web test                           # vitest: kern van de verwerking (gratis)
+npm --prefix web run typecheck
+npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
+npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
 ```
 
-Draai de unit tests en de zelftest na elke wijziging aan `afgeleide_lijnen.py`, `schema.py` of `score.py`.
+Draai de unit tests en de zelftest na elke wijziging aan `afgeleide_lijnen.py`, `schema.py` of `score.py`. Na een
+wijziging aan `schema.py`, `prompts/extractie.md`, `artikelen.json` of het verzoek in `run_eval.py`: ook
+`exporteer_voor_app.py` draaien; `test_export_app.py` faalt anders.
 
 ## Architectuur
 
@@ -56,18 +65,38 @@ Datastroom: database → `eval/data/gold.jsonl` → `eval/data/cases.jsonl` + `e
 - **Resultaten**: elke run in een eigen map onder `eval/results/` (bv. `2026-11-11-controle`). Meng geen runs op
   verschillende versies van `cases.jsonl` in dezelfde map.
 
+## De app (`web/`)
+
+Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke-data/docs/plan-stap-8.md`. Nu is
+alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonder database, route of schermen.
+
+- **Flow** (`verwerk.ts`): audio → Voxtral (`voxtral-mini-transcribe-3`, taal `nl`) → tekst; een foto gaat
+  rechtstreeks naar Claude. Dan Haiku 5.5 op effort `medium` met hetzelfde verzoek als de eval → validatie →
+  afgeleide lijnen. Onderdelen met code `onbekend` komen apart terug: ze kunnen geen werfbonlijn worden.
+- **Eén bron:** Python. `web/lib/verwerking/gegenereerd/` komt uit `eval/exporteer_voor_app.py`; pas het niet met de
+  hand aan. `afgeleide-lijnen.ts` is een port van `afgeleide_lijnen.py` en draait dezelfde tests.
+- **Validatie** (`valideer.ts`): Ajv op hetzelfde schema, plus uren 0–12, km ≥ 0, aantal > 0. Een fout wordt niet
+  gecorrigeerd. Ook hier geen refusal-fallback.
+- **Testscript** (`web/scripts/test-gevallen.ts`): schrijft `runs.jsonl` in het formaat van `run_eval.py`, zodat
+  `score.py` het scoort. Spraak op tekst (`tekst`) en op eigen opnames (`audio`) in aparte mappen.
+  Eigen opnames staan in `eval/data/opnames/` en worden nooit gecommit (een stem is een persoonsgegeven).
+- `.env` staat in de repo-root; `next.config.ts` en het testscript laden ze daar.
+- **Nog niet gebouwd (deel 3):** de route `POST /api/verwerk` met sessie, bucket `werfbon-opnames` en wegschrijven
+  als conceptbon (ontwerp in het plan), de Supabase-sleutels en de schermen.
+
 ## Kosten en API-calls
 
 Elke call naar de Anthropic API kost geld. Doe geen calls (`maak_cases.py` zonder bestaande teksten, `run_eval.py`
 zonder `--droog`) zonder dat de gebruiker erom vraagt, en vermeld daarna de kost. `run_eval.py --droog` en
-`score.py --zelftest` zijn gratis.
+`score.py --zelftest` zijn gratis. `test-gevallen.ts` zonder `--droog` doet wel calls (Claude, en bij
+`--invoer audio` ook Voxtral, aan $0,0035 per minuut audio). `npm --prefix web test` en `--droog` zijn gratis.
 
 ## Data-veiligheid
 
 - Alle data is fictief, maar er komen nooit namen, telefoonnummers of e-mailadressen in de testdata. De controles in
   `export_gold.py` en `maak_cases.py` stoppen bij een treffer; filter niets stil weg.
 - De databaseverbinding is altijd read-only (`default_transaction_read_only = on`).
-- `.env` bevat `ANTHROPIC_API_KEY` en `DATABASE_URL`. Lees het niet en commit het nooit.
+- `.env` bevat `ANTHROPIC_API_KEY`, `DATABASE_URL` en `MISTRAL_API_KEY`. Lees het niet en commit het nooit.
 
 ## Werkwijze
 

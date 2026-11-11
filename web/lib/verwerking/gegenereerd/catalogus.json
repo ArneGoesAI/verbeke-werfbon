@@ -1,0 +1,226 @@
+[
+  {
+    "code": "ARB-ONDERH-VENT",
+    "omschrijving": "Jaarlijks onderhoud ventilatie",
+    "categorie": "arbeid",
+    "eenheid": "forfait",
+    "verkoopprijs": 145.0
+  },
+  {
+    "code": "ARB-ONDERH-WP",
+    "omschrijving": "Jaarlijks onderhoud warmtepomp",
+    "categorie": "arbeid",
+    "eenheid": "forfait",
+    "verkoopprijs": 215.0
+  },
+  {
+    "code": "ARB-ONDERH-ZB",
+    "omschrijving": "Jaarlijks onderhoud zonneboiler",
+    "categorie": "arbeid",
+    "eenheid": "forfait",
+    "verkoopprijs": 140.0
+  },
+  {
+    "code": "ARB-TECH",
+    "omschrijving": "Arbeid technieker",
+    "categorie": "arbeid",
+    "eenheid": "uur",
+    "verkoopprijs": 62.0
+  },
+  {
+    "code": "ELEK-AANSL",
+    "omschrijving": "Elektrische aansluiting en zekering",
+    "categorie": "onderdeel",
+    "eenheid": "forfait",
+    "verkoopprijs": 385.0
+  },
+  {
+    "code": "KM",
+    "omschrijving": "Kilometervergoeding",
+    "categorie": "verplaatsing",
+    "eenheid": "km",
+    "verkoopprijs": 0.45
+  },
+  {
+    "code": "OND-PCB",
+    "omschrijving": "Printplaat binnenunit",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 485.0
+  },
+  {
+    "code": "OND-POMP",
+    "omschrijving": "Circulatiepomp",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 295.0
+  },
+  {
+    "code": "OND-PRES",
+    "omschrijving": "Expansievat 18 l",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 89.0
+  },
+  {
+    "code": "OND-SENS",
+    "omschrijving": "Temperatuursensor",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 64.0
+  },
+  {
+    "code": "OND-VENTIEL",
+    "omschrijving": "Driewegklep",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 215.0
+  },
+  {
+    "code": "SAN-BUIS",
+    "omschrijving": "Meerlagenbuis met koppelingen",
+    "categorie": "sanitair",
+    "eenheid": "m",
+    "verkoopprijs": 14.0
+  },
+  {
+    "code": "SAN-DOUCHE",
+    "omschrijving": "Inloopdouche compleet met thermostatische kraan",
+    "categorie": "sanitair",
+    "eenheid": "stuk",
+    "verkoopprijs": 1890.0
+  },
+  {
+    "code": "SAN-LAVABO",
+    "omschrijving": "Badkamermeubel met lavabo 80 cm",
+    "categorie": "sanitair",
+    "eenheid": "stuk",
+    "verkoopprijs": 940.0
+  },
+  {
+    "code": "SAN-ONTH",
+    "omschrijving": "Waterontharder",
+    "categorie": "sanitair",
+    "eenheid": "stuk",
+    "verkoopprijs": 1450.0
+  },
+  {
+    "code": "SAN-WC",
+    "omschrijving": "Hangtoilet met inbouwreservoir",
+    "categorie": "sanitair",
+    "eenheid": "stuk",
+    "verkoopprijs": 690.0
+  },
+  {
+    "code": "VENT-C-VRAAG",
+    "omschrijving": "Vraaggestuurde ventilatie systeem C",
+    "categorie": "ventilatie",
+    "eenheid": "stuk",
+    "verkoopprijs": 2350.0
+  },
+  {
+    "code": "VENT-D-350",
+    "omschrijving": "Ventilatie-unit systeem D 350 m³/h met WTW",
+    "categorie": "ventilatie",
+    "eenheid": "stuk",
+    "verkoopprijs": 3950.0
+  },
+  {
+    "code": "VENT-D-450",
+    "omschrijving": "Ventilatie-unit systeem D 450 m³/h met WTW",
+    "categorie": "ventilatie",
+    "eenheid": "stuk",
+    "verkoopprijs": 4450.0
+  },
+  {
+    "code": "VENT-FILT",
+    "omschrijving": "Filterset ventilatie-unit",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 49.0
+  },
+  {
+    "code": "VENT-KAN",
+    "omschrijving": "Ventilatiekanaal geïsoleerd",
+    "categorie": "ventilatie",
+    "eenheid": "m",
+    "verkoopprijs": 28.0
+  },
+  {
+    "code": "VENT-VENT",
+    "omschrijving": "Ventiel toevoer/afvoer",
+    "categorie": "ventilatie",
+    "eenheid": "stuk",
+    "verkoopprijs": 34.0
+  },
+  {
+    "code": "VERPL",
+    "omschrijving": "Verplaatsingskosten",
+    "categorie": "verplaatsing",
+    "eenheid": "forfait",
+    "verkoopprijs": 45.0
+  },
+  {
+    "code": "WP-BUF-200",
+    "omschrijving": "Buffervat 200 l",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 890.0
+  },
+  {
+    "code": "WP-CONS",
+    "omschrijving": "Montageconsole en trillingsdempers buitenunit",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 245.0
+  },
+  {
+    "code": "WP-GEO-08",
+    "omschrijving": "Bodem-water warmtepomp 8 kW",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 11800.0
+  },
+  {
+    "code": "WP-KOEL",
+    "omschrijving": "Koelmiddel bijvullen R32 (per kg)",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 95.0
+  },
+  {
+    "code": "WP-LW-06",
+    "omschrijving": "Lucht-water warmtepomp 6 kW monobloc",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 7450.0
+  },
+  {
+    "code": "WP-LW-08",
+    "omschrijving": "Lucht-water warmtepomp 8 kW monobloc",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 8350.0
+  },
+  {
+    "code": "WP-LW-11",
+    "omschrijving": "Lucht-water warmtepomp 11 kW split",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 9900.0
+  },
+  {
+    "code": "WP-SWW-300",
+    "omschrijving": "Sanitair warmwaterboiler 300 l",
+    "categorie": "warmtepomp",
+    "eenheid": "stuk",
+    "verkoopprijs": 1650.0
+  },
+  {
+    "code": "ZB-ONDERD",
+    "omschrijving": "Onderdelenset zonneboiler",
+    "categorie": "onderdeel",
+    "eenheid": "stuk",
+    "verkoopprijs": 120.0
+  }
+]
