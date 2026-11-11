@@ -1,2 +1,4 @@
-psycopg[binary]
-python-dotenv
+psycopg[binary]==3.2.13
+python-dotenv==1.2.1
+anthropic==0.125.0
+pillow==11.3.0

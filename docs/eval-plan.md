@@ -180,6 +180,11 @@ Die tweede run controleert meteen of Haiku 5.5, Sonnet 5.5 en structured output 
   ontcijferen van slordig schrift.
 - **De seed is regelmatig.** Er zijn maar 7 soorten herstelling en 3 soorten onderhoud, dus de 20 gevallen dekken de
   variatie van de seed, niet die van de praktijk.
+- **De opmerking past niet altijd bij de melding.** De seed kiest de opmerking van een herstelling los van de melding
+  en het toestel. Zo heeft c01 (werfbon 814) een printplaat van een binnenunit bij een storing aan een ventilatie
+  (Zehnder ComfoAir). De gold klopt met de database, maar zo'n combinatie komt in de praktijk niet voor. Een model dat
+  het onderdeel uit de context afleidt in plaats van uit wat de technieker zegt, kan daar fout gaan, of net juist
+  uitkomen om de verkeerde reden. Zulke gevallen bekijken we apart in de lijst met verschillen.
 - **20 gevallen** tonen alleen grote verschillen tussen modellen (zie de beslisregel).
 
 ## 7. Structuur in de repo
