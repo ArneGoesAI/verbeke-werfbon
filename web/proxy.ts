@@ -24,7 +24,8 @@ export async function proxy(request: NextRequest) {
   // getClaims controleert de handtekening van het token; ververst het zo nodig (en zet dan nieuwe cookies).
   const { data } = await supabase.auth.getClaims();
   const pad = request.nextUrl.pathname;
-  const open = pad === "/login" || pad.startsWith("/api/"); // een route geeft zelf 401, geen doorverwijzing
+  // Een route geeft zelf 401, geen doorverwijzing. /huisstijl bestaat alleen in ontwikkeling.
+  const open = pad === "/login" || pad.startsWith("/api/") || pad === "/huisstijl";
   if (!data?.claims && !open) {
     const naarLogin = NextResponse.redirect(new URL("/login", request.url));
     for (const c of antwoord.cookies.getAll()) naarLogin.cookies.set(c);

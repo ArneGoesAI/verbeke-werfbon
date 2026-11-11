@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:gevallen": "tsx scripts/test-gevallen.ts",
     "testaccounts": "tsx scripts/testaccounts.ts",
-    "test:logins": "tsx scripts/test-logins.ts"
+    "test:logins": "tsx scripts/test-logins.ts",
+    "opruimen": "tsx scripts/opruimen.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.8.0",

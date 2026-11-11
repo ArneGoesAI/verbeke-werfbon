@@ -33,6 +33,7 @@ npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
 npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
 npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run opruimen                   # app-data op live tonen (droog); -- --echt [--ook-accounts] verwijdert
 npm --prefix web run dev                        # app op localhost:3000
 npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
 ```
@@ -91,8 +92,10 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
 - **Deel 3 in uitvoering** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
   Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
-  `/vandaag` en `/administratie`. Nog niet: de rest van de huisstijl, het opruimscript, de schermen T1–T4 en A1,
-  route `POST /api/verwerk`.
+  `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
+  opruimscript. Nog niet: de schermen T1–T4 en A1, route `POST /api/verwerk`.
+- **Opruimen** (`scripts/opruimen.ts`): app-data herkent het aan `werfbonnen.bron` spraak of foto; alles in
+  `werfbon_opnames` en de bucket is van de app. Het stopt bij twijfel. Na een test met de app: droog, dan `--echt`.
 - `next.config.ts` laadt de root-`.env` met `forceReload`: zonder dat geeft `@next/env` de eerdere lading van `web/`
   (zonder sleutels) uit de cache terug.
 

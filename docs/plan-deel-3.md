@@ -1,6 +1,6 @@
 # Stap 8, deel 3: de werfbon-app in `web/`
 
-Status: in uitvoering (2026-11-12). Pakket A is grotendeels gebouwd, zie [Stand](#stand). Dit plan werkt deel 3 uit
+Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar, zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -50,8 +50,8 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | Deel | Stand |
 |---|---|
 | 1. Supabase-clients | **Klaar** |
-| 2. Huisstijl | **Deels**: kleuren als CSS-variabelen, lettertypes, `Logo`. Nog niet: `Knop`, `Label`, `Kaart`, `NakijkVak`, `lib/opmaak.ts`, `/huisstijl` |
-| 3. Testaccounts en opruimscript | **Deels**: testaccounts aangemaakt op live (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4), plus `test:logins`. Nog niet: `opruimen.ts` |
+| 2. Huisstijl | **Klaar** |
+| 3. Testaccounts en opruimscript | **Klaar**: testaccounts op live (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4), `test:logins`, `opruimen` (droog nagekeken) |
 | 4. Inloggen | **Klaar**, met tijdelijke pagina's `/vandaag` en `/administratie` |
 | 5–11 | Nog niet begonnen |
 
@@ -69,6 +69,16 @@ Gedaan in pakket A, met wat erbij kwam:
   administratie ziet 38 medewerkers en 372 facturen).
 - `/login`, `proxy.ts`, `lib/rol.ts`, `lib/sessie.ts`, `app/acties.ts` (aanmelden, afmelden).
 - Getest in de browser: zonder login naar `/login`; fout wachtwoord geeft de gele melding.
+- Huisstijl: `components/` met `Knop`/`KnopLink` (primair, omlijnd, petrol, petrolWit, nakijkOmlijnd; maten
+  standaard 56, groot 64, klein 44), `Label` (groot, klein, mini), `Kaart` (met warmterand voor "actief"),
+  `NakijkVak`; `lib/opmaak.ts` (bedrag met harde spatie na €, aantal, uren, km, dagtitel, tijd in Belgische tijd,
+  groet, klantnaam, initialen) met tests. `/huisstijl` (alleen in ontwikkeling) speelt `Main.dc.html` na: naast elkaar
+  op 1200 px gelijk, knoppen en labels nagemeten (hoogte, hoeken, lettergrootte, kleur).
+- `web/scripts/opruimen.ts`: droog als standaard, `--echt`, `--ook-accounts`. Selectie en veiligheidscontroles in
+  `lib/beheer/opruimen.ts` met tests: stopt bij een bon die geen app-bon is, een factuur die ook bij een andere bon
+  hoort, of een factuur die betaald of vervallen is. Na `--echt` controleert het zelf dat er niets overblijft.
+  Droog op live (2026-11-12): geen app-data; met `--ook-accounts` precies de twee testgebruikers en medewerkers 4
+  en 18.
 
 Afwijking van het plan: de technieker die het script koos (meeste interventies op de peildatum) heeft er maar één.
 T1 zal dus één kaart tonen, niet drie zoals in de mockup. Voor een volledig T1 is een andere keuze of extra
@@ -82,7 +92,7 @@ inplanning nodig; te beslissen bij deel 5.
   `import "server-only"`, alleen voor de route en de scripts).
 - **Test:** vitest dat `dienst.ts` en `server.ts` niet buiten de server te importeren zijn; `next build` slaagt.
 
-### Deel 2. Huisstijl en bouwstenen — deels
+### Deel 2. Huisstijl en bouwstenen — klaar
 - `app/globals.css` met de kleuren uit de README als variabelen; `components/`: `Logo` (SVG uit `Main.dc.html`),
   `Knop` (warmte 56 px, omlijnd, petrol-licht 44 px), `Label` (nakijken, in orde, ingesproken, automatisch),
   `Kaart`, `NakijkVak` (geel vak met icoon).
@@ -91,7 +101,7 @@ inplanning nodig; te beslissen bij deel 5.
 - **Test:** vitest voor `opmaak.ts`; een dev-pagina `/huisstijl` die `Main.dc.html` naspeelt, naast elkaar
   vergeleken in de browser op 1200 px.
 
-### Deel 3. Testaccounts en opruimscript — deels
+### Deel 3. Testaccounts en opruimscript — klaar
 - `web/scripts/testaccounts.ts` (secret key, idempotent): maakt `technieker@verbeke.test` en
   `administratie@verbeke.test` aan met `auth.admin.createUser` (e-mail bevestigd, wachtwoord willekeurig),
   koppelt ze via `medewerkers.auth_user_id`. Technieker = de actieve technieker met de meeste herstellingen en
