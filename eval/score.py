@@ -87,8 +87,10 @@ def beoordeel(run: Dict[str, Any], case: Dict[str, Any], catalogus, werfbon_mode
         "pad": run["pad"], "herhaling": run["herhaling"], "config": run["config"],
         "geldig": output is not None, "fout": fout, "antwoord": antwoord_sleutel(output, lijnen),
         "usage": run.get("usage") or {}, "latency_s": run.get("latency_s"),
+        "testdata_probleem": case.get("testdata_probleem"),
     }
     if output is None:
+        r.update(status="fout", onzeker_n=0, verzonnen=0)
         r.update(factuur=False, uren=False, km=False, tp=0, fp=0, fn=sum(gold_onderdelen.values()),
                  aantal_ok=0, aantal_n=0, bron_ok=0, bron_n=0, onbekend=False if case["randgeval"] ==
                  "onbekend_onderdeel" else None,
@@ -103,9 +105,29 @@ def beoordeel(run: Dict[str, Any], case: Dict[str, Any], catalogus, werfbon_mode
     bron_ok = sum(1 for o in output["onderdelen"]
                   if normaliseer_tekst(o["bronzin"]) and f" {normaliseer_tekst(o['bronzin'])} " in tekst)
 
+    # Onzeker of fout? "onbekend" waar de gold een catalogus-code heeft, is voorzichtig: de factuur moet nagekeken
+    # worden, maar er is niets verzonnen. Een verkeerde code, of "onbekend" zonder gemist onderdeel, is verzonnen.
+    gold_cat = Counter({c: n for c, n in gold_onderdelen.items() if c != ONBEKEND})
+    model_cat = Counter({c: n for c, n in model_onderdelen.items() if c != ONBEKEND})
+    gemist = gold_cat - model_cat
+    onbekend_extra = max(0, model_onderdelen[ONBEKEND] - gold_onderdelen[ONBEKEND])
+    onzeker_n = min(onbekend_extra, sum(gemist.values()))
+    verzonnen = sum((model_cat - gold_cat).values()) + (onbekend_extra - onzeker_n)
+    uren_ok = getal(output["uren"]) == getal(gold["uren"])
+    factuur = uren_ok and lijnen == gold_lijnen
+
+    status = "juist" if factuur else "fout"
+    if not factuur and uren_ok and verzonnen == 0 and onzeker_n and onzeker_n == sum(gemist.values()):
+        # Juist als elk extra "onbekend" het gemiste onderdeel was (met het aantal uit de gold)?
+        hersteld = [l for l in lijnen if l["code"] != ONBEKEND] + [l for l in gold_lijnen if l["code"] == ONBEKEND]
+        hersteld += [{"code": c, "aantal": gold_aantal[c]} for c in gemist]
+        if normaliseer(hersteld) == gold_lijnen:
+            status = "onzeker"
+
     r.update(
-        factuur=getal(output["uren"]) == getal(gold["uren"]) and lijnen == gold_lijnen,
-        uren=getal(output["uren"]) == getal(gold["uren"]),
+        status=status, onzeker_n=onzeker_n, verzonnen=verzonnen,
+        factuur=factuur,
+        uren=uren_ok,
         km=output["km"] == gold["km"],
         tp=tp, fp=sum(model_onderdelen.values()) - tp, fn=sum(gold_onderdelen.values()) - tp,
         aantal_ok=sum(1 for c in gevonden if model_aantal[c] == gold_aantal[c]), aantal_n=len(gevonden),
@@ -143,6 +165,8 @@ def samenvatting(rs: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "n": len(rs),
         "factuur": pct(sum(r["factuur"] for r in rs), len(rs)),
+        "onzeker": pct(sum(r["status"] == "onzeker" for r in rs), len(rs)),
+        "foutief": pct(sum(r["status"] == "fout" for r in rs), len(rs)),
         "uren": pct(sum(r["uren"] for r in rs), len(rs)),
         "precisie": pct(tp, tp + fp) if tp + fp else (100.0 if fn == 0 else 0.0),
         "recall": pct(tp, tp + fn) if tp + fn else 100.0,
@@ -155,7 +179,7 @@ def samenvatting(rs: List[Dict[str, Any]]) -> Dict[str, Any]:
         "euro_gem": statistics.mean(herstel) if herstel else None,
         "onderhoud_precisie": pct(o_tp, o_tp + o_fp) if onderhoud and o_tp + o_fp else None,
         "onderhoud_recall": pct(o_tp, o_tp + o_fn) if onderhoud and o_tp + o_fn else None,
-        "verzonnen": fp,
+        "verzonnen": sum(r["verzonnen"] for r in rs),
     }
 
 
@@ -189,11 +213,15 @@ def fmt(x: Optional[float], eenheid: str = "%") -> str:
     return f"{x:.2f}{eenheid}"
 
 
-KOLOMMEN = [("factuur", "Factuur juist", "%"), ("uren", "Uren", "%"), ("precisie", "Precisie", "%"),
+KOLOMMEN = [("factuur", "Factuur juist", "%"), ("onzeker", "Onzeker", "%"), ("foutief", "Fout", "%"),
+            ("uren", "Uren", "%"), ("precisie", "Precisie", "%"),
             ("recall", "Recall", "%"), ("aantal", "Aantal", "%"), ("onbekend", "Onbekend", "%"),
             ("bron", "Bron", "%"), ("geldig", "Geldig", "%"), ("km", "Km", "%"),
             ("euro_som", "Fout € (herst.)", "€"), ("onderhoud_recall", "Onderh. extra recall", "%"),
             ("onderhoud_precisie", "Onderh. extra precisie", "%")]
+# Factuur juist = 100% − onzeker − fout. Onzeker: "onbekend" waar de gold een code heeft (voorzichtig, na te kijken).
+# Fout: al de rest (verkeerde code, verzonnen onderdeel, verkeerde uren, ongeldige output).
+NUL_IN_ZELFTEST = {"onzeker", "foutief"}
 
 
 def tabel(groepen: Dict[str, List[Dict[str, Any]]], titel: str) -> List[str]:
@@ -229,8 +257,9 @@ def kosten_tabel(rs: List[Dict[str, Any]]) -> List[str]:
 def beslisregel(rs: List[Dict[str, Any]]) -> List[str]:
     """§4: mag Haiku het spraakpad overnemen?
 
-    - Factuur juist: per geval bij meerderheid. Een geval is juist als meer dan de helft van de herhalingen juist
-      is (bij een gelijke stand telt het als fout).
+    - Factuur: per geval bij meerderheid. Een geval is juist als meer dan de helft van de herhalingen juist is.
+      Anders is het fout of onzeker, naargelang wat vaker voorkomt (bij een gelijke stand: fout). Alleen "fout"
+      telt voor de regel; "onzeker" (onbekend waar de gold een code heeft) wordt apart getoond.
     - Verzonnen onderdeel: over alle herhalingen. Eén verzonnen onderdeel in één herhaling is genoeg om te falen.
     - Onbekend onderdeel: elke herhaling van het randgeval moet juist zijn.
     - Fout in euro: gemiddelde per herstelbon, over alle herhalingen.
@@ -242,9 +271,21 @@ def beslisregel(rs: List[Dict[str, Any]]) -> List[str]:
     if not sonnet or not haiku:
         return []
 
+    def geval_status(g):
+        n = Counter(r["status"] for r in g)
+        if n["juist"] * 2 > len(g):
+            return "juist"
+        return "fout" if n["fout"] >= n["onzeker"] else "onzeker"
+
+    def gevallen(groep, status):
+        return sorted(cid for cid, g in groepeer(groep, lambda r: r["case_id"]).items() if geval_status(g) == status)
+
     def gevallen_fout(groep):
-        per_geval = groepeer(groep, lambda r: r["case_id"])
-        return sum(1 for g in per_geval.values() if sum(r["factuur"] for r in g) * 2 <= len(g))
+        return len(gevallen(groep, "fout"))
+
+    def lijst(ids, groep):
+        probleem = {r["case_id"] for r in groep if r["testdata_probleem"]}
+        return ", ".join(i + (" (testdata-probleem)" if i in probleem else "") for i in ids) or "geen"
 
     def euro_gem(groep):
         e = [r["euro"] for r in groep if r["euro"] is not None]
@@ -255,13 +296,14 @@ def beslisregel(rs: List[Dict[str, Any]]) -> List[str]:
     for h in haiku:
         g = configs[h]
         onbekend = [r["onbekend"] for r in g if r["onbekend"] is not None]
-        runs_met_verzonnen = [r for r in g if r["fp"] > 0]  # over alle herhalingen, niet bij meerderheid
+        runs_met_verzonnen = [r for r in g if r["verzonnen"] > 0]  # over alle herhalingen, niet bij meerderheid
         toetsen = [
-            (f"factuur juist (per geval bij meerderheid): hoogstens 1 geval meer fout "
-             f"({gevallen_fout(g)} tegenover {gevallen_fout(s)})",
+            (f"factuur (per geval bij meerderheid): hoogstens 1 geval meer fout "
+             f"({gevallen_fout(g)} tegenover {gevallen_fout(s)}; fout: {lijst(gevallen(g, 'fout'), g)}). "
+             f"Onzeker telt niet mee: {lijst(gevallen(g, 'onzeker'), g)} tegenover {lijst(gevallen(s, 'onzeker'), s)}",
              gevallen_fout(g) <= gevallen_fout(s) + 1),
             (f"geen verzonnen onderdeel, over alle herhalingen ({len(runs_met_verzonnen)} van {len(g)} runs, "
-             f"{sum(r['fp'] for r in g)} onderdeel/onderdelen"
+             f"{sum(r['verzonnen'] for r in g)} onderdeel/onderdelen"
              + (f": {', '.join(sorted({r['case_id'] for r in runs_met_verzonnen}))}" if runs_met_verzonnen else "")
              + ")",
              not runs_met_verzonnen),
@@ -284,7 +326,8 @@ def verschillen(rs: List[Dict[str, Any]], cases: Dict[str, Dict[str, Any]]) -> L
             continue
         case = cases[case_id]
         gold = case["gold"]
-        regels += [f"## {case_id} ({pad}, {case['stratum']})", "",
+        markering = " — testdata-probleem" if case.get("testdata_probleem") else ""
+        regels += [f"## {case_id} ({pad}, {case['stratum']}){markering}", "",
                    f"- **gold**: uren {getal(gold['uren'])}, km {gold['km']}: "
                    + ", ".join(f"{l['code']}×{l['aantal']}" for l in normaliseer(gold["lijnen"]))]
         for naam, antwoorden in per_config.items():
@@ -299,8 +342,22 @@ def rapport(rs: List[Dict[str, Any]], cases: Dict[str, Dict[str, Any]]) -> List[
     regels += tabel(groepeer(rs, lambda r: f"{config_naam(r['config'])} · {r['type']}"), "Per type")
     regels += tabel(groepeer(rs, lambda r: f"{config_naam(r['config'])} · {r['pad']}"), "Per invoerweg")
     regels += tabel(groepeer(rs, lambda r: f"{config_naam(r['config'])} · {r['bron']}"), "Per bron")
+    probleem = {r["case_id"]: r["testdata_probleem"] for r in rs if r["testdata_probleem"]}
+    if probleem:
+        regels += tabel(groepeer([r for r in rs if not r["testdata_probleem"]], lambda r: config_naam(r["config"])),
+                        "Per config, zonder gevallen met een testdata-probleem")
     regels += kosten_tabel(rs)
     regels += beslisregel(rs)
+    niet_juist = [r for r in rs if r["status"] != "juist"]
+    if niet_juist:
+        regels += ["### Facturen die niet juist zijn", ""] + [
+            f"- {config_naam(r['config'])} · {r['case_id']} · {r['pad']} #{r['herhaling']}: **{r['status']}** — "
+            f"{r['antwoord']}" + (" _(testdata-probleem)_" if r["testdata_probleem"] else "")
+            for r in sorted(niet_juist, key=lambda r: (config_naam(r["config"]), r["case_id"], r["pad"], r["herhaling"]))
+        ] + [""]
+    if probleem:
+        regels += ["### Gevallen met een testdata-probleem", ""] + [
+            f"- {cid}: {reden}" for cid, reden in sorted(probleem.items())] + [""]
     ongeldig = [r for r in rs if not r["geldig"]]
     if ongeldig:
         regels += ["### Ongeldige outputs", ""] + [
@@ -341,8 +398,9 @@ def controleer_zelftest(rs: List[Dict[str, Any]]) -> List[str]:
     for naam, groep in groepen.items():
         s = samenvatting(groep)
         for k, titel, eenheid in KOLOMMEN:
-            if eenheid == "%" and s[k] is not None and s[k] != 100.0:
-                problemen.append(f"{naam}: {titel} = {s[k]:.1f}%")
+            verwacht = 0.0 if k in NUL_IN_ZELFTEST else 100.0
+            if eenheid == "%" and s[k] is not None and s[k] != verwacht:
+                problemen.append(f"{naam}: {titel} = {s[k]:.1f}% (verwacht {verwacht:.0f}%)")
         if s["euro_som"] not in (None, 0.0):
             problemen.append(f"{naam}: fout in euro = {s['euro_som']}")
         if s["verzonnen"]:
@@ -377,7 +435,8 @@ def main() -> None:
         if problemen:
             print("Zelftest MISLUKT:\n  " + "\n  ".join(problemen))
             sys.exit(1)
-        print(f"Zelftest geslaagd: {len(rs)} runs ({len(cases)} gevallen × 2 paden), alle scores 100%, fout in euro 0.")
+        print(f"Zelftest geslaagd: {len(rs)} runs ({len(cases)} gevallen × 2 paden), alle scores 100%, "
+              f"onzeker en fout 0%, fout in euro 0.")
         return
 
     map_ = args.resultaten or max((p for p in RESULTATEN.glob("*") if (p / "runs.jsonl").exists()), default=None)

@@ -95,6 +95,7 @@ Alle scores zijn deterministisch. Een LLM als beoordelaar is nog niet nodig.
 | Score | Definitie | Waarom |
 |---|---|---|
 | **Factuur juist** (hoofdscore) | Uren exact juist, en de volledige lijnenset (met de afgeleide lijnen) is exact gelijk aan `werfbon_lijnen`, met aantallen | Dat bepaalt of de technieker iets moet corrigeren voor de factuur |
+| Onzeker en fout | Een factuur die niet juist is, is **onzeker** als het enige verschil is dat het model `onbekend` gaf waar de gold een catalogus-code heeft. Al de rest is **fout**: een verkeerde code, een verzonnen onderdeel, verkeerde uren, ongeldige output | Beide vragen een correctie, maar onzeker is voorzichtig (er wordt iets nagevraagd) en fout geeft een verkeerde factuur |
 | Uren juist | Exact, zonder tolerantie | Arbeid is het grootste deel van een herstelfactuur |
 | Onderdelen: precisie en recall | Over de artikelcodes van de onderdelen | Een gemist onderdeel is gemiste omzet, een verzonnen onderdeel geeft een klacht |
 | Aantal juist | Per gevonden code | |
@@ -148,10 +149,12 @@ eenmalig voor het genereren van de teksten met Opus.
 
 **Beslisregel, vooraf vastgelegd.** Haiku mag het spraakpad overnemen als:
 
-- het op "factuur juist" hoogstens 1 geval meer fout heeft dan Sonnet. Per geval telt de meerderheid van de
-  herhalingen: een geval is juist als meer dan de helft van de herhalingen juist is
+- het hoogstens 1 geval meer **fout** heeft dan Sonnet. Per geval telt de meerderheid van de herhalingen: een geval
+  is juist als meer dan de helft van de herhalingen juist is, en anders fout of onzeker, naargelang wat vaker
+  voorkomt. Onzekere gevallen tellen niet mee voor deze regel, maar worden apart getoond
 - het geen enkel verzonnen onderdeel heeft, **over alle herhalingen**: één verzonnen onderdeel in één herhaling is
-  genoeg om te falen. Een verzonnen onderdeel geeft een klacht, ook als het maar af en toe gebeurt
+  genoeg om te falen. Een verzonnen onderdeel geeft een klacht, ook als het maar af en toe gebeurt. `onbekend` voor
+  een onderdeel dat wel gebruikt is, telt niet als verzonnen; `onbekend` zonder gemist onderdeel wel
 - het randgeval met het onbekende onderdeel in elke herhaling juist is
 - de fout in euro op de herstellingen gemiddeld niet hoger is dan bij Sonnet
 
