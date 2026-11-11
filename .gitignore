@@ -14,3 +14,13 @@ supabase/.temp/
 # Python
 .venv/
 __pycache__/
+
+# Eigen spraakopnames voor de test (stem = persoonsgegeven): nooit committen
+eval/data/opnames/
+
+# Next.js
+web/.next/
+web/next-env.d.ts
+
+# TypeScript
+web/tsconfig.tsbuildinfo

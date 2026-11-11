@@ -108,7 +108,7 @@ Alle scores zijn deterministisch. Een LLM als beoordelaar is nog niet nodig.
 | Onderdelen: precisie en recall | Over de artikelcodes van de onderdelen | Een gemist onderdeel is gemiste omzet, een verzonnen onderdeel geeft een klacht |
 | Aantal juist | Per gevonden code | |
 | Onbekend juist gemarkeerd | Alleen bij het randgeval | Het model mag geen code gokken |
-| Bron klopt | Elke bronzin komt letterlijk (na normalisatie) voor in de inspreektekst | De app toont die zin naast elke lijn |
+| Bron klopt | Elke bronzin komt letterlijk (na normalisatie) voor in de inspreektekst, of bij een eigen opname in het transcript | De app toont die zin naast elke lijn |
 | Geldige output | De JSON past in het schema en de codes komen uit de enum | Met structured output zou dit 100% moeten zijn. Een geval waar dat niet zo is, is een bug |
 
 **Apart gerapporteerd**

@@ -1,0 +1,114 @@
+{
+  "$defs": {
+    "Onderdeel": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Artikelcode uit de catalogus, of 'onbekend' als het onderdeel er niet in staat of je niet zeker weet welk artikel het is.",
+          "enum": [
+            "ELEK-AANSL",
+            "OND-PCB",
+            "OND-POMP",
+            "OND-PRES",
+            "OND-SENS",
+            "OND-VENTIEL",
+            "SAN-BUIS",
+            "SAN-DOUCHE",
+            "SAN-LAVABO",
+            "SAN-ONTH",
+            "SAN-WC",
+            "VENT-C-VRAAG",
+            "VENT-D-350",
+            "VENT-D-450",
+            "VENT-FILT",
+            "VENT-KAN",
+            "VENT-VENT",
+            "WP-BUF-200",
+            "WP-CONS",
+            "WP-GEO-08",
+            "WP-KOEL",
+            "WP-LW-06",
+            "WP-LW-08",
+            "WP-LW-11",
+            "WP-SWW-300",
+            "ZB-ONDERD",
+            "onbekend"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "aantal": {
+          "description": "Aantal in de eenheid van het artikel (stuk, m, kg).",
+          "title": "Aantal",
+          "type": "number"
+        },
+        "omschrijving": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Alleen bij code 'onbekend': wat het onderdeel is. Anders null.",
+          "title": "Omschrijving"
+        },
+        "bronzin": {
+          "description": "Het stuk tekst waaruit dit onderdeel blijkt, letterlijk overgenomen.",
+          "title": "Bronzin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "aantal",
+        "omschrijving",
+        "bronzin"
+      ],
+      "title": "Onderdeel",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "uren": {
+      "description": "Gewerkte uren als decimaal getal (anderhalf uur = 1.5). Bij een verbetering: de verbeterde waarde.",
+      "title": "Uren",
+      "type": "number"
+    },
+    "km": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Gereden kilometers, of null als er niets over gezegd of geschreven is.",
+      "title": "Km"
+    },
+    "onderdelen": {
+      "description": "Gebruikt materiaal. Geen arbeid, verplaatsing of onderhoudsforfait: die rekent het systeem zelf.",
+      "items": {
+        "$ref": "#/$defs/Onderdeel"
+      },
+      "title": "Onderdelen",
+      "type": "array"
+    },
+    "opmerking": {
+      "description": "Hoogstens twee zinnen, in de woorden van de technieker: wat er gebeurd is en wat opgevolgd moet worden.",
+      "title": "Opmerking",
+      "type": "string"
+    }
+  },
+  "required": [
+    "uren",
+    "km",
+    "onderdelen",
+    "opmerking"
+  ],
+  "title": "Werfbon",
+  "type": "object"
+}

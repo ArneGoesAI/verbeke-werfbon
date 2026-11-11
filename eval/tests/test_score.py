@@ -78,5 +78,19 @@ class TestStatus(unittest.TestCase):
         self.assertEqual((r["status"], r["geldig"], r["verzonnen"]), ("fout", False, 0))
 
 
+class TestBron(unittest.TestCase):
+    def test_bronzin_in_inspreektekst(self):
+        r = beoordeel(run([("OND-POMP", 1)]), case(HERSTELLING_POMP), CATALOGUS, MODEL)
+        self.assertEqual((r["bron_ok"], r["bron_n"]), (1, 1))
+
+    def test_bronzin_in_transcript_bij_audio(self):
+        # Het model zag het transcript ("een nieuwe pomp"), niet de inspreektekst ("nieuwe pomp gestoken").
+        audio = run([("OND-POMP", 1)])
+        audio["transcript"] = "ik heb er een nieuwe pomp in gestoken"
+        self.assertEqual(beoordeel(audio, case(HERSTELLING_POMP), CATALOGUS, MODEL)["bron_ok"], 1)
+        audio["transcript"] = "ik heb er een pomp in gestoken"
+        self.assertEqual(beoordeel(audio, case(HERSTELLING_POMP), CATALOGUS, MODEL)["bron_ok"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
