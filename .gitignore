@@ -1,0 +1,12 @@
+# Geheimen: nooit committen
+.env
+.env.*
+!.env.example
+
+# Lokale Claude Code-instellingen
+.claude/settings.local.json
+
+# Systeem en tooling
+.DS_Store
+node_modules/
+supabase/.temp/
