@@ -19,7 +19,8 @@ Geef terug:
     "omschrijving" null.
   - **bronzin**: neem letterlijk het stuk tekst over waaruit het onderdeel blijkt, zonder iets te veranderen. Bij een
     foto: wat er op de bon geschreven staat.
-- **opmerking**: een korte samenvatting in het Nederlands van wat er gebeurd is, inclusief wat opgevolgd moet worden.
+- **opmerking**: kort, hoogstens twee zinnen, in de woorden van de technieker: wat er gebeurd is en wat opgevolgd
+  moet worden. Geen beschrijving van de werf of van het toestel die de technieker niet zelf geeft.
 
 Verzin niets. Wat niet gezegd of geschreven is, staat niet in de output.
 

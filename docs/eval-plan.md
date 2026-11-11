@@ -4,7 +4,7 @@ Dit plan beschrijft de eval voor laag b uit `docs/plan-werfbon-app.md` in `ArneG
 gestructureerde werfbon uit een inspreektekst of een foto, scoren die tegen de database, en vergelijken Claude Haiku 5.5
 met Claude Sonnet 5.5 op kwaliteit en kost. De eval is in Python geschreven. We beginnen klein, met 20 testgevallen.
 
-Status: voorstel, nog geen code.
+Status: stap 1 tot 4 van §8 zijn klaar; Haiku `medium` is kandidaat voor het spraakpad. Volgende stap: de echte bonnen.
 
 ## Beslissingen
 
@@ -18,6 +18,14 @@ Status: voorstel, nog geen code.
    fout in euro zegt daar niets. Onderhoud wordt apart gerapporteerd (zie §3).
 4. **Geen persoonsgegevens in `gold.jsonl`.** Geen namen, telefoonnummers of e-mailadressen, ook al is de seed fictief.
    Zie §1.
+5. **Haiku 5.5 op effort `medium` is kandidaat voor het spraakpad** (11 november 2026). Het haalt de beslisregel uit
+   §4 in de volledige vergelijking (`eval/results/2026-11-11-vergelijking`); Haiku op `low` haalt hem niet. Het
+   model wordt pas vastgelegd na de echte bonnen (§6, §8 stap 5). De kost is bij dit volume geen argument: ongeveer
+   $1,50 per maand voor Sonnet tegenover $0,07 voor Haiku.
+6. **`max_tokens` 2000 en een korte opmerking** (11 november 2026). In de vergelijking bleef één Sonnet-run zijn
+   opmerking doorschrijven tot 16.000 tokens. Het schema kan geen lengte opleggen, dus vraagt de prompt nu hoogstens
+   twee zinnen in de woorden van de technieker, en stopt `max_tokens` 2000 een run die toch doorloopt. De hoogste
+   normale output in de vergelijking was 953 tokens.
 
 ## Vaststelling die het ontwerp stuurt
 
@@ -160,6 +168,18 @@ eenmalig voor het genereren van de teksten met Opus.
 
 Bij 20 gevallen zie je alleen grote verschillen. Dat is goed genoeg om Haiku uit te sluiten of verder te testen, niet
 om een klein verschil te bewijzen. Bij twijfel breiden we de set uit, en het script werkt op elk aantal gevallen.
+
+**Uitkomst van de vergelijking** (11 november 2026, `eval/results/2026-11-11-vergelijking`, 360 calls, ongeveer
+$0,95):
+
+- **Haiku `medium` haalt de regel.** 0 gevallen fout (Sonnet ook 0), geen verzonnen onderdeel in 60 runs, het
+  randgeval 3/3 juist, en een gemiddelde fout van € 14,70 op de herstellingen tegenover € 44,09 bij Sonnet.
+- **Haiku `low` haalt hem niet.** 4 verzonnen onderdelen in 60 runs (c01 en c20), en een fout van € 46,79.
+- **Het verschil in euro zegt weinig.** Het komt bijna helemaal van c01, het geval met het testdata-probleem (§6):
+  Sonnet antwoordt daar telkens `onbekend`, wat verdedigbaar is maar als ontbrekend bedrag telt.
+- **Beslissing:** Haiku `medium` is kandidaat voor het spraakpad, te bevestigen met de echte bonnen (zie Beslissingen,
+  punt 5). Deze run liep nog met `max_tokens` 16000 en de oude vraag naar de opmerking (punt 6); een volgende run komt
+  in een nieuwe map.
 
 ## 5. Provider en regio
 
