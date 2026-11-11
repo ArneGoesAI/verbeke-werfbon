@@ -176,6 +176,11 @@ Die tweede run controleert meteen of Haiku 5.5, Sonnet 5.5 en structured output 
   een technieker en niet als een model. De ongeveer tien echte bonnen (zelf ingesproken in het Vlaams en met de hand
   ingevuld en gefotografeerd) zijn de enige test van echt dialect, achtergrondlawaai, echt handschrift en slechte
   foto's. Een model wordt pas vastgelegd na die echte bonnen, en die bekijken we één voor één, niet als percentage.
+- **De inspreekteksten zijn nagelezen door Claude Code, niet door een mens.** In `cases.jsonl` staat daarom
+  `nagelezen_door: "claude-code"` bij alle 20. Een model las dus de teksten van een ander model uit dezelfde familie,
+  en dat versterkt de eerste beperking: wat voor een model natuurlijk klinkt, valt bij die nalezing minder op. De
+  nalezing ving wel inhoudelijke fouten op (een verzonnen oorzaak, een dubbelzinnig aantal km, een samenvatting die het
+  antwoord verklapte). Of de teksten klinken als een Vlaamse technieker, moet nog door een mens beoordeeld worden.
 - **De gerenderde bonnen zijn geen handschrift.** Ze testen de lay-out en het lezen van een formulier, niet het
   ontcijferen van slordig schrift.
 - **De seed is regelmatig.** Er zijn maar 7 soorten herstelling en 3 soorten onderhoud, dus de 20 gevallen dekken de
