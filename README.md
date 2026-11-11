@@ -77,7 +77,14 @@ De gekozen configuratie draait nu ook in de app ([`web/`](web/), Next.js). Een s
 (Mistral) naar tekst, een foto gaat rechtstreeks naar Claude. Daarna volgt Haiku 5.5 op effort medium, met exact
 dezelfde prompt en hetzelfde schema als de eval. Die exporteert Python naar de app, zodat ze niet uit elkaar kunnen
 groeien. Een testscript stuurt de gevallen uit de eval door de kern van de app, en `score.py` scoort het resultaat
-zoals een gewone eval-run. De route naar de database en de schermen volgen nog.
+zoals een gewone eval-run.
+
+De app heeft twee kanten. De technieker ziet zijn interventies van vandaag, spreekt een bon in of fotografeert de
+papieren bon, en krijgt een voorstel te zien: elke lijn met het citaat waar ze vandaan komt, of het label
+"Automatisch". Een onderdeel dat het model niet kent, wordt een geel vak dat eerst opgelost moet zijn. Na
+"Bevestigen" maakt de database een conceptfactuur. De administratie ziet die conceptfacturen met hun bedragen,
+waarschuwingen (niet getekend, onderdeel bij onderhoud, …) en de opname of foto, en keurt ze goed. De technieker ziet
+nooit prijzen; wat iemand ziet, bepaalt row level security in Supabase. De app draait nog niet online.
 
 ## Meer weten
 

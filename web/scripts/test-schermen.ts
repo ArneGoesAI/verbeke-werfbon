@@ -85,8 +85,8 @@ async function main() {
   const { data: artikelen } = await tech.db.from("artikelen").select("code, omschrijving, categorie");
   controleer((artikelen?.length ?? 0) > 0, `catalogus zichtbaar (${artikelen?.length} artikelen)`);
 
-  await tech.db.auth.signOut();
-  await admin.db.auth.signOut();
+  await tech.db.auth.signOut({ scope: "local" });
+  await admin.db.auth.signOut({ scope: "local" });
   console.log(fouten === 0 ? "ALLES OK" : `${fouten} fout(en)`);
   process.exit(fouten === 0 ? 0 : 1);
 }

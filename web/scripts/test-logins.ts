@@ -68,7 +68,7 @@ async function test(soort: "TECHNIEKER" | "ADMINISTRATIE", verwacht: "/vandaag" 
     controleer(medewerkers > 1, `ziet alle medewerkers (${medewerkers})`);
     controleer(facturen > 0, `ziet facturen (${facturen})`);
   }
-  await db.auth.signOut();
+  await db.auth.signOut({ scope: "local" });
 }
 
 async function main() {

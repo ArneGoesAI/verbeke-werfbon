@@ -15,7 +15,8 @@
     "test:logins": "tsx scripts/test-logins.ts",
     "test:schermen": "tsx scripts/test-schermen.ts",
     "test:flow": "tsx scripts/test-flow.ts",
-    "opruimen": "tsx scripts/opruimen.ts"
+    "opruimen": "tsx scripts/opruimen.ts",
+    "test:administratie": "tsx scripts/test-administratie.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.8.0",
