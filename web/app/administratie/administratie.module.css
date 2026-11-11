@@ -14,6 +14,11 @@
   flex: 0 0 220px;
   padding: 28px 20px;
   background: var(--menu);
+  /* Afmelden blijft in beeld, ook als het detail langer is dan het scherm. */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -25,6 +30,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   padding: 10px 12px;
   border-radius: 12px;
   background: var(--kaart);
@@ -95,7 +101,8 @@
 .tabel th.eerste, .tabel td.eerste { padding-left: 18px; }
 .tabel th.laatste, .tabel td.laatste { padding-right: 18px; }
 .tabel .rechts { text-align: right; }
-.nummer { font-weight: 700; border-left: 4px solid transparent; }
+.nummer { font-weight: 700; border-left: 4px solid transparent; white-space: nowrap; }
+.tabel td.rechts { white-space: nowrap; }
 .tabel tbody tr.rijActief, .tabel tbody tr.rijActief:hover { background: #fdf3ec; }
 .rijActief .nummer { border-left-color: var(--warmte); }
 /* De hele rij is klikbaar via de link in de eerste cel. */
@@ -186,3 +193,10 @@
 }
 .bevestigVraag { font-size: 16px; font-weight: 700; }
 .bevestigUitleg { font-size: 14px; line-height: 1.45; color: var(--inkt-zacht); }
+
+/* Smal (menu en inhoud onder elkaar): het menu wordt een gewone balk bovenaan. */
+@media (max-width: 799px) {
+  .menu { flex: 1 1 100%; position: static; min-height: 0; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .afmelden { margin: 0 0 0 auto; flex-direction: row; align-items: center; }
+  .inhoud { padding: 24px 16px; }
+}

@@ -61,7 +61,7 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
 | 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
 | 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
-| 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie`; goedkeuren op live en de schermvergelijking in de browser nog te doen |
+| 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie` en in de browser (1360 × 900 en 390 breed, bevestigingsstap geopend en geannuleerd); goedkeuren op live nog te doen |
 | 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; status in `verbeke-data` en `opruimen --echt` nog te doen |
 
 Gedaan in pakket A, met wat erbij kwam:
@@ -152,6 +152,9 @@ Gedaan in pakket C (2026-11-12):
   onderhoud warmtepomp, € 217 + btw 6% € 13,02 = € 230,02), totaal = som van de lijnen = `factuurvoorstel`, status
   "Onderdeel bij onderhoud", foto te openen via de signed URL. De technieker ziet geen facturen en krijgt 42501 op
   `keur_factuur_goed`.
+- In de browser (2026-11-12, als administratie): breedtes van tabel en detail gelijk aan de mockup (623 en 429 px op
+  1360). Factuurnummer en bedrag breken niet meer af; het menu is sticky zodat "Afmelden" in beeld blijft, en wordt
+  onder 800 px een balk bovenaan.
 - Keuzes: de duur van een opname staat niet in de database; de speler leest ze uit het bestand (bij webm van
   MediaRecorder soms pas na het afspelen, dan zonder duur). Een factuur met meer bonnen (alleen in oude data) toont
   de eerste bon en de waarschuwingen van alle bonnen.
