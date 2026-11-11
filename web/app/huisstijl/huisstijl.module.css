@@ -1,0 +1,25 @@
+.pagina { max-width: 1200px; padding: 56px 64px; display: flex; flex-direction: column; gap: 40px; }
+.kop { display: flex; justify-content: space-between; align-items: center; }
+.merk { display: flex; align-items: center; gap: 16px; }
+.merkTekst { display: flex; flex-direction: column; }
+.naam { font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 34px; letter-spacing: -0.5px; line-height: 1; }
+.ondertitel { font-size: 13px; color: var(--inkt-gedempt); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+.gedempt { font-size: 15px; color: var(--inkt-gedempt); }
+.raster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+.blok { display: flex; flex-direction: column; gap: 16px; }
+.blok h2 { margin: 0; font-size: 22px; }
+.stalen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.staal { display: flex; flex-direction: column; gap: 6px; }
+.staal div { height: 72px; border-radius: 14px; }
+.staal strong { font-size: 14px; }
+.staal span { font-size: 13px; color: var(--inkt-gedempt); }
+.typo { background: var(--kaart); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px; border: 1px solid var(--rand); }
+.groet { font-family: var(--font-fraunces), Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1; }
+.lees { font-size: 18px; line-height: 1.5; }
+.uitleg { font-size: 13px; color: var(--inkt-gedempt); }
+.rij { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.smal { max-width: 390px; display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 800px) {
+  .pagina { padding: 28px 16px; }
+  .raster { grid-template-columns: minmax(0, 1fr); }
+}

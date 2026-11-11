@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Interventies vandaag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 20px; background: #FAF6F0; color: #2A2420; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; justify-content: space-between; align-items: center">
+<svg width="40" height="40" viewBox="0 0 56 56" role="img" aria-label="Logo Verbeke">
+<rect width="56" height="56" rx="16" fill="#C2531E"></rect>
+<path d="M14 30 L28 18 L42 30" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M19 38 C23 34, 27 42, 31 38 S 37 34, 39 38" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"></path>
+</svg>
+<button type="button" aria-label="Profiel" style="width: 44px; height: 44px; border-radius: 999px; border: none; background: #F0E8DF; color: #4A3F38; font-family: Figtree, sans-serif; font-size: 16px; font-weight: 700">JV</button>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; color: #6B5F57">Woensdag 11 november</span>
+<h1 style="margin: 0; font-family: Fraunces, Georgia, serif; font-size: 32px; font-weight: 600; line-height: 1.1">Goeiemorgen, Jonas</h1>
+<span style="font-size: 17px; color: #4A3F38">3 interventies vandaag</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+
+<a href="T2-Interventie.dc.html" style="display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 20px; background: #FFFFFF; border: 2px solid #C2531E">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 15px; font-weight: 700; color: #A8441A">08:30 · Nu bezig</span>
+<span style="padding: 4px 12px; border-radius: 999px; background: #FCEFD2; color: #6E4700; font-size: 13px; font-weight: 600">Bon nog in te spreken</span>
+</div>
+<span style="font-size: 19px; font-weight: 700">Herstelling warmtepomp</span>
+<span style="font-size: 15px; color: #4A3F38">Panasonic Aquarea 9 kW · verwarmt niet, foutcode</span>
+<span style="font-size: 15px; color: #6B5F57">Fam. De Smet · Erpe-Mere</span>
+</a>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 20px; background: #FFFFFF; border: 1px solid #EDE4DA">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 15px; font-weight: 700; color: #4A3F38">11:00</span>
+<span style="padding: 4px 12px; border-radius: 999px; background: #F0E8DF; color: #4A3F38; font-size: 13px; font-weight: 600">Gepland</span>
+</div>
+<span style="font-size: 19px; font-weight: 700">Onderhoud ventilatie</span>
+<span style="font-size: 15px; color: #4A3F38">Zehnder ComfoAir Q450 · jaarlijks onderhoud</span>
+<span style="font-size: 15px; color: #6B5F57">Fam. Peeters · Aalst</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 20px; background: #FFFFFF; border: 1px solid #EDE4DA">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 15px; font-weight: 700; color: #4A3F38">14:30</span>
+<span style="padding: 4px 12px; border-radius: 999px; background: #F0E8DF; color: #4A3F38; font-size: 13px; font-weight: 600">Gepland</span>
+</div>
+<span style="font-size: 19px; font-weight: 700">Herstelling boiler</span>
+<span style="font-size: 15px; color: #4A3F38">Lek onder de boiler</span>
+<span style="font-size: 15px; color: #6B5F57">Bakkerij Van Hecke · Lede</span>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

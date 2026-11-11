@@ -1,0 +1,73 @@
+/* Maten en kleuren 1-op-1 uit docs/ontwerp/*.dc.html. */
+
+/* Knoppen */
+.knop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-sizing: border-box;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+.knop:disabled, .knop[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+
+.primair { background: var(--warmte); color: #fff; font-weight: 700; }
+.primair:not(:disabled):hover { background: var(--warmte-donker); }
+.omlijnd { background: transparent; color: var(--inkt); border: 2px solid var(--inkt); font-weight: 600; }
+.omlijnd:not(:disabled):hover { background: rgba(42, 36, 32, 0.05); }
+.petrol { background: var(--petrol-licht); color: var(--petrol); font-weight: 600; }
+.petrolWit { background: #fff; color: var(--petrol); font-weight: 700; }
+.nakijkOmlijnd { background: transparent; color: var(--nakijken-tekst); border: 1px solid #d9b76a; font-weight: 600; }
+
+/* standaard: Main.dc.html */
+.standaard { height: 56px; padding: 0 28px; border-radius: 16px; font-size: 17px; }
+/* groot: T2 (64 px) */
+.groot { height: 64px; padding: 0 24px; border-radius: 18px; font-size: 18px; }
+/* klein: Kies artikel (44 px) */
+.klein { height: 44px; padding: 0 18px; border-radius: 12px; font-size: 15px; }
+.breed { width: 100%; }
+
+/* Labels */
+.label {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.labelGroot { padding: 6px 14px; font-size: 14px; }
+.labelKlein { padding: 4px 12px; font-size: 13px; }
+.labelMini { padding: 3px 10px; font-size: 12px; }
+.nakijken { background: var(--nakijken); color: var(--nakijken-tekst); }
+.inOrde { background: var(--in-orde); color: var(--in-orde-tekst); }
+.ingesproken { background: var(--petrol-licht); color: var(--petrol); }
+.automatisch { background: var(--automatisch); color: var(--automatisch-tekst); }
+
+/* Kaart */
+.kaart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+  color: inherit;
+  text-decoration: none;
+}
+.kaartActief { border: 2px solid var(--warmte); }
+
+/* Nakijkvak */
+.nakijkVak {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--nakijken);
+}
+.nakijkKop { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: var(--nakijken-tekst); }
+.nakijkTekst { font-size: 15px; line-height: 1.45; color: var(--inkt-zacht); }
