@@ -1,9 +1,8 @@
 # Stap 8, deel 3: de werfbon-app in `web/`
 
-Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
-één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
-spraakopname staan nog open. Pakket C (delen 10–11) is gebouwd en read-only getest op live; FA-2026-00377 is op live
-goedgekeurd via het scherm, en live is weer opgeruimd. Zie [Stand](#stand). Dit plan werkt deel 3 uit
+Status: gebouwd (2026-11-12). Pakketten A, B en C (delen 1–11) zijn klaar. De gebruiker deed een eindtest in de
+browser en meldde die als geslaagd; daarbij liep een echte spraakopname door de app (bon 854, factuur 378). Live is
+daarna weer opgeruimd. Open: de status in `verbeke-data` (aparte PR) en een test op een gsm. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -59,10 +58,10 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 5. T1 Vandaag | **Code klaar**, queries nagekeken met `test:schermen`; schermvergelijking in de browser nog te doen |
 | 6. T2 Interventie | **Code klaar**, idem; interventie van een collega onzichtbaar (nagekeken) |
 | 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
-| 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
+| 8. T3 Inspreken en foto-pad | **Klaar**: echte spraakopname in de browser in de eindtest (webm); op een gsm nog niet nagegaan |
 | 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
 | 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie` en in de browser (1360 × 900 en 390 breed, bevestigingsstap geopend en geannuleerd); FA-2026-00377 goedgekeurd via het scherm |
-| 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; `opruimen --echt` gedaan (2026-11-12); status in `verbeke-data` nog te doen |
+| 11. Afwerking | **Klaar**: `CLAUDE.md`, `README` en dit plan bijgewerkt; `opruimen --echt` na de eindtest (2026-11-12); status in `verbeke-data` via een aparte PR |
 
 Gedaan in pakket A, met wat erbij kwam:
 - `web/lib/supabase/`: `config.ts` (sleutels inlezen, stopt bij een publishable key op de plaats van de secret key),
@@ -162,6 +161,10 @@ Gedaan in pakket C (2026-11-12):
   bestand; `--echt` verwijderde ze. Een tweede droge run vindt niets meer; `test:administratie` ziet 0
   conceptfacturen. De testaccounts blijven bestaan.
 - Testscripts melden af met `scope: "local"`: de standaard ("global") beëindigde ook de sessie in de browser.
+- Eindtest door de gebruiker (2026-11-12), gemeld als geslaagd. Eén fix: de "N"-badge van `next dev` viel linksonder
+  over de naam in het menu van A1; `devIndicators: false` in `next.config.ts` (alleen in ontwikkeling).
+- Opgeruimd na de eindtest: droog toonde precies bon 854, factuur 378, opname 3 en één `.webm`; `--echt`
+  verwijderde ze, een tweede droge run vindt niets meer. De testaccounts blijven bestaan.
 - Keuzes: de duur van een opname staat niet in de database; de speler leest ze uit het bestand (bij webm van
   MediaRecorder soms pas na het afspelen, dan zonder duur). Een factuur met meer bonnen (alleen in oude data) toont
   de eerste bon en de waarschuwingen van alle bonnen.

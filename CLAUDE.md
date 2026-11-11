@@ -94,7 +94,7 @@ Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke
   migratie 0004 bepaalt wat iemand ziet. `dienst.ts` gebruikt `SUPABASE_SECRET_KEY` en passeert RLS: alleen voor de
   route en, via `dienst-kern.ts`, voor de scripts. `server.ts` en `dienst.ts` importeren `server-only`, zodat de
   build faalt als ze in een clientcomponent belanden.
-- **Deel 3 in uitvoering** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
+- **Deel 3 gebouwd** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
   Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
