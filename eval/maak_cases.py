@@ -171,6 +171,20 @@ Inhoud: vertel in je eigen woorden hoe lang je bezig was, hoeveel kilometer je g
 je gebruikt hebt (met het aantal) en wat er gebeurd is. Laat niets weg en verzin niets bij: geen extra \
 onderdelen, geen andere uren."""
 
+# Wat Opus over een onderdeel te horen krijgt: een generieke omschrijving, nooit de catalogusnaam. Die bevat
+# specificaties ("Expansievat 18 l") die anders in de tekst belanden ("van achttien liter") en de code verklappen.
+GENERIEKE_NAMEN = {
+    "OND-PCB": ("de elektronicakaart in het toestel", "stuk"),
+    "OND-VENTIEL": ("de klep die schakelt tussen verwarming en warm water", "stuk"),
+    "OND-POMP": ("de pomp die het water door de verwarming stuurt", "stuk"),
+    "SAN-BUIS": ("een stuk waterleiding met koppelingen", "meter"),
+    "OND-SENS": ("een voeler die de temperatuur meet", "stuk"),
+    "OND-PRES": ("het vat dat de druk in de installatie opvangt", "stuk"),
+    "VENT-FILT": ("een set nieuwe filters voor de ventilatie-unit", "set"),
+    "WP-KOEL": ("koelmiddel", "kilo"),
+}
+# Specificaties uit de catalogus die niet in een inspreektekst horen (het lek uit de eerste controlerun).
+CATALOGUS_SPECS = re.compile(r"\bachttien\s*(liter|l)\b", re.IGNORECASE)
 CODEPATROON = re.compile(r"\b[A-Z]{2,}-[A-Z0-9]+(?:-[A-Z0-9]+)*\b")
 
 # Vaktermen van de onderdelen: die mogen niet in de inspreektekst. Ook verkleinwoorden en meervouden
@@ -292,8 +306,10 @@ def spraak_opdracht(case: Dict[str, Any], catalogus: Dict[str, Dict[str, Any]]) 
         if l["code"] == ONBEKEND:
             materiaal.append(f"{l['omschrijving']} ({getal_nl(l['aantal'])} stuk)")
         elif catalogus[l["code"]]["categorie"] not in ("arbeid", "verplaatsing"):
-            a = catalogus[l["code"]]
-            materiaal.append(f"{a['omschrijving']} ({getal_nl(l['aantal'])} {a['eenheid']})")
+            if l["code"] not in GENERIEKE_NAMEN:
+                raise SystemExit(f"Geen generieke naam voor {l['code']}. Voeg hem toe aan GENERIEKE_NAMEN.")
+            naam, eenheid = GENERIEKE_NAMEN[l["code"]]
+            materiaal.append(f"{naam} ({getal_nl(l['aantal'])} {eenheid})")
     regels.append("Gebruikt materiaal: " + ("; ".join(materiaal) if materiaal else "geen"))
     regels.append(f"Wat er gebeurd is (vertel het in je eigen woorden): {gold['opmerking'] or '(niets bijzonders)'}")
     if case.get("_spraak_extra"):
@@ -327,6 +343,9 @@ def controleer_spraak(
     for naam in verboden_namen(case):
         if any(w.startswith(naam) for w in tekst_woorden):
             problemen.append(f"vakterm voor een onderdeel: {naam!r}")
+    m = CATALOGUS_SPECS.search(tekst)
+    if m:
+        problemen.append(f"specificatie uit de catalogus: {m.group(0)!r}")
     m = BON_VERWIJZING.search(tekst)
     if m:
         problemen.append(f"zegt hoe iets op de bon moet komen: {m.group(0)!r}")
@@ -409,14 +428,14 @@ INKT = (28, 38, 120)
 DRUK = (40, 40, 40)
 BREEDTE, HOOGTE = 1240, 1754  # A4 staand op 150 dpi
 
-# Hoe een technieker het materiaal opschrijft. {n} = aantal. Soms schrijft hij de code.
+# Hoe een technieker het materiaal opschrijft. {n} = aantal. Eén bon in de set krijgt de code (zie kies_bon_met_code).
 MATERIAAL_HAND = {
     "OND-PCB": ["{n}x print binnenunit", "nieuwe print", "printplaat"],
     "OND-VENTIEL": ["{n}x 3-wegklep", "driewegklep", "klep vervangen"],
     "OND-POMP": ["{n}x circulatiepomp", "pomp vervangen", "circ. pomp"],
     "SAN-BUIS": ["{n} m buis + koppeling", "stuk meerlagenbuis", "koppeling + buis"],
     "OND-SENS": ["{n}x voeler", "temp. sensor", "sensor"],
-    "OND-PRES": ["{n}x expansievat", "exp. vat 18L", "vat vervangen"],
+    "OND-PRES": ["{n}x expansievat", "exp. vat", "vat vervangen"],
     "VENT-FILT": ["{n}x filterset", "filters", "nieuwe filters"],
     "WP-KOEL": ["{n} kg koelmiddel", "{n} kg R32"],
 }
@@ -438,6 +457,16 @@ def uren_hand(uren: float, rng: random.Random) -> str:
     return rng.choice(vormen)
 
 
+def kies_bon_met_code(cases: List[Dict[str, Any]], catalogus: Dict[str, Dict[str, Any]]) -> None:
+    """Precies één bon in de set krijgt de artikelcode in plaats van een omschrijving (§2: "soms met een code")."""
+    kandidaten = [c for c in cases if c["groep"] != "randgeval" and any(
+        l["code"] != ONBEKEND and catalogus[l["code"]]["categorie"] not in ("arbeid", "verplaatsing")
+        for l in c["gold"]["lijnen"])]
+    if kandidaten:
+        gekozen = random.Random(f"{SEED}-code").choice(kandidaten)
+        gekozen.setdefault("_foto", {})["code"] = True
+
+
 def materiaal_hand(case: Dict[str, Any], catalogus: Dict[str, Dict[str, Any]], rng: random.Random) -> List[str]:
     regels = []
     for l in case["gold"]["lijnen"]:
@@ -448,11 +477,13 @@ def materiaal_hand(case: Dict[str, Any], catalogus: Dict[str, Dict[str, Any]], r
             continue  # arbeid, verplaatsing en forfait schrijft de technieker niet als materiaal
         elif code == "WP-KOEL":  # randgeval "aantal hoger dan 1": altijd in kilo, zoals een technieker het schrijft
             regels.append(rng.choice(MATERIAAL_HAND[code]).format(n=n))
-        elif rng.random() < 0.3 or code not in MATERIAAL_HAND:
+        elif case.get("_foto", {}).get("code"):
             eenheid = catalogus[code]["eenheid"]
             regels.append(f"{n}x {code}" if eenheid == "stuk" else f"{n} {eenheid} {code}")
-        else:
+        elif code in MATERIAAL_HAND:
             regels.append(rng.choice(MATERIAAL_HAND[code]).format(n=n))
+        else:
+            regels.append(catalogus[code]["omschrijving"].lower())
     return regels
 
 
@@ -617,6 +648,7 @@ def main() -> None:
     cases = [maak_case(n, r) for n, r in enumerate(gold, start=1)]
     controleer_codes(cases, catalogus)
     deel_stijlkaarten_uit(cases)
+    kies_bon_met_code(cases, catalogus)
     if args.alles:
         args.opnieuw = [c["werfbon_id"] for c in cases]
 
