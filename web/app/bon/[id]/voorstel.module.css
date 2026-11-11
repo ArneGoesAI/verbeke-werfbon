@@ -1,0 +1,180 @@
+/* T4: maten uit docs/ontwerp/T4-Voorstel.dc.html. */
+
+.pagina {
+  min-height: 100dvh;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.kop { display: flex; flex-direction: column; gap: 4px; }
+.onderwerp { font-size: 15px; color: var(--inkt-gedempt); }
+.titel { margin: 0; font-size: 28px; line-height: 1.15; }
+
+.tegels { display: flex; gap: 10px; }
+.tegel {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.tegelBewerk { border: 2px solid var(--petrol); padding: 11px 13px; cursor: default; }
+.tegelNaam { font-size: 13px; color: var(--inkt-gedempt); }
+.tegelWaarde { font-size: 22px; font-weight: 700; }
+.tegelInvoer { display: flex; align-items: baseline; gap: 6px; font-size: 18px; font-weight: 600; }
+.tegelInvoer input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--inkt);
+}
+.tegelInvoer input[aria-invalid="true"] { color: var(--warmte-donker); }
+
+.lijnen { display: flex; flex-direction: column; border-radius: 18px; background: var(--kaart); border: 1px solid var(--rand); }
+.rij { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.rij + .rij { border-top: 1px solid var(--rand); }
+.rijKnop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rijNaam { font-size: 17px; font-weight: 700; }
+.citaat { font-size: 14px; line-height: 1.4; color: var(--inkt-zacht); font-style: italic; }
+.rijAfgeleid { flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; }
+.afgeleidNaam { font-size: 16px; font-weight: 600; }
+.bediening { display: flex; gap: 8px; align-items: center; padding-top: 4px; }
+.rond {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid var(--inkt);
+  background: transparent;
+  color: var(--inkt);
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rond:disabled { opacity: 0.35; cursor: not-allowed; }
+.verwijder {
+  margin-left: auto;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--automatisch);
+  color: var(--warmte-donker);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nietAangerekend { display: flex; flex-direction: column; gap: 6px; padding: 0 4px; }
+.nietRij { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--inkt-gedempt); }
+.tekstKnop {
+  min-height: 44px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: var(--petrol);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.vuller { flex-grow: 1; }
+.onderaan { display: flex; flex-direction: column; gap: 10px; }
+.hint { font-size: 14px; color: var(--inkt-gedempt); text-align: center; }
+.fout {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--nakijken);
+  color: var(--nakijken-tekst);
+  font-size: 15px;
+  font-weight: 600;
+}
+.bevestig { height: 60px; border-radius: 18px; font-size: 18px; }
+.opnieuw {
+  height: 52px;
+  border-radius: 16px;
+  border: 2px solid var(--inkt);
+  color: var(--inkt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.kiezer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: var(--kalk);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 20px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+.kiezerKop { display: flex; justify-content: space-between; align-items: center; }
+.kiezerTitel { margin: 0; font-size: 24px; }
+.zoek {
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  background: var(--kaart);
+  font: inherit;
+  font-size: 17px;
+  color: var(--inkt);
+}
+.zoek:focus-visible { outline: 3px solid var(--petrol-licht); border-color: var(--petrol); }
+.kiezerLijst { flex: 1; overflow-y: auto; display: flex; flex-direction: column; border-radius: 18px; background: var(--kaart); border: 1px solid var(--rand); }
+.kiezerRij {
+  min-height: 56px;
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--rand);
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--inkt);
+  text-align: left;
+  cursor: pointer;
+}
+.kiezerRij:last-child { border-bottom: none; }
+.kiezerRij:hover { background: var(--menu); }

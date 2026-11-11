@@ -33,6 +33,7 @@ npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
 npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
 npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run test:schermen              # queries van T1/T2 met de technieker (alleen lezen)
 npm --prefix web run opruimen                   # app-data op live tonen (droog); -- --echt [--ook-accounts] verwijdert
 npm --prefix web run dev                        # app op localhost:3000
 npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
@@ -93,7 +94,11 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
   Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
-  opruimscript. Nog niet: de schermen T1–T4 en A1, route `POST /api/verwerk`.
+  opruimscript. Pakket B (code klaar, echte flow nog te testen): T1 `/vandaag`, T2 `/interventie/[id]`,
+  T3 `/interventie/[id]/inspreken`, T4 `/bon/[id]` met server action `bevestig`, route `POST /api/verwerk`
+  (logica in `lib/route/`, testbaar met nagemaakte afhankelijkheden). Nog niet: A1.
+- **Prijzen** horen niet in de browser van de technieker: importeer in clientcode nooit `gegenereerd.ts`,
+  `valideer.ts` of `verwerk.ts` (die laden de catalogus met prijzen). `MAX_UREN` staat apart in `grenzen.ts`.
 - **Opruimen** (`scripts/opruimen.ts`): app-data herkent het aan `werfbonnen.bron` spraak of foto; alles in
   `werfbon_opnames` en de bucket is van de app. Het stopt bij twijfel. Na een test met de app: droog, dan `--echt`.
 - `next.config.ts` laadt de root-`.env` met `forceReload`: zonder dat geeft `@next/env` de eerdere lading van `web/`

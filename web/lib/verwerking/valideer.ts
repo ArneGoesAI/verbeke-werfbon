@@ -5,9 +5,10 @@ import { Ajv } from "ajv";
 
 import { AFGELEIDE_CODES } from "./afgeleide-lijnen";
 import { SCHEMA } from "./gegenereerd";
+import { MAX_UREN } from "./grenzen";
 import type { Extractie } from "./types";
 
-export const MAX_UREN = 12;
+export { MAX_UREN };
 
 const ajv = new Ajv({ allErrors: false, strict: true });
 const controleerSchema = ajv.compile<Extractie>(SCHEMA);
