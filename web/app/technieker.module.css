@@ -1,0 +1,131 @@
+/* Gedeelde opmaak van de technieker-schermen (T1–T4), maten uit docs/ontwerp/T*.dc.html (390 × 844). */
+
+.pagina {
+  min-height: 100dvh;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* T1 */
+.kop { display: flex; justify-content: space-between; align-items: center; }
+.profiel { position: relative; }
+.profiel summary { list-style: none; }
+.profiel summary::-webkit-details-marker { display: none; }
+.initialen {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--automatisch);
+  color: var(--automatisch-tekst);
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.profielMenu {
+  position: absolute;
+  right: 0;
+  top: 52px;
+  z-index: 10;
+  min-width: 200px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+  box-shadow: 0 8px 24px rgba(42, 36, 32, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.profielNaam { padding: 8px 10px; font-size: 15px; color: var(--inkt-gedempt); }
+.profielMenu button {
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--inkt);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.profielMenu button:hover { background: var(--menu); }
+
+.groet { display: flex; flex-direction: column; gap: 6px; }
+.datum { font-size: 15px; color: var(--inkt-gedempt); }
+.titel { margin: 0; font-size: 32px; line-height: 1.1; }
+.aantal { font-size: 17px; color: var(--inkt-zacht); }
+
+.lijst { display: flex; flex-direction: column; gap: 12px; }
+.kaartKop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.uur { font-size: 15px; font-weight: 700; color: var(--inkt-zacht); }
+.uurActief { color: var(--warmte-donker); }
+.kaartTitel { font-size: 19px; font-weight: 700; }
+.kaartTekst { font-size: 15px; color: var(--inkt-zacht); }
+.kaartKlant { font-size: 15px; color: var(--inkt-gedempt); }
+.leeg { font-size: 16px; line-height: 1.5; color: var(--inkt-zacht); }
+
+/* T2 */
+.terug {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--inkt-zacht);
+  text-decoration: none;
+  align-self: flex-start;
+}
+.paginaT2 { gap: 20px; }
+.boventitel { font-size: 15px; font-weight: 700; color: var(--warmte-donker); }
+.titelT2 { margin: 0; font-size: 30px; line-height: 1.15; }
+.blok { display: flex; flex-direction: column; gap: 6px; }
+.gegevens {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+}
+.veld { display: flex; flex-direction: column; gap: 2px; }
+.veldNaam { font-size: 13px; color: var(--inkt-gedempt); text-transform: uppercase; letter-spacing: 1px; }
+.veldWaarde { font-size: 17px; font-weight: 600; }
+.veldTekst { font-size: 15px; color: var(--inkt-zacht); }
+.melding { font-size: 16px; line-height: 1.45; }
+.scheiding { height: 1px; background: var(--rand); }
+.vuller { flex-grow: 1; }
+.uitleg { display: flex; flex-direction: column; gap: 6px; padding: 0 4px; }
+.uitlegTitel { font-size: 17px; font-weight: 700; }
+.uitlegTekst { font-size: 15px; line-height: 1.45; color: var(--inkt-zacht); }
+.knoppen { display: flex; flex-direction: column; gap: 12px; }
+.verborgen { display: none; }
+.fout {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--nakijken);
+  color: var(--nakijken-tekst);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.bezig {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--petrol-licht);
+  color: var(--petrol);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}

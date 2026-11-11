@@ -33,6 +33,9 @@ npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
 npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
 npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run test:schermen              # queries van T1/T2 met de technieker (alleen lezen)
+npm --prefix web run test:flow -- --stap concept # foto → route → conceptbon (kost geld, schrijft op live)
+npm --prefix web run test:flow -- --stap bevestig --bon <id>   # bevestigen + factuur nakijken (schrijft)
 npm --prefix web run opruimen                   # app-data op live tonen (droog); -- --echt [--ook-accounts] verwijdert
 npm --prefix web run dev                        # app op localhost:3000
 npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
@@ -93,7 +96,11 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
   Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
-  opruimscript. Nog niet: de schermen T1–T4 en A1, route `POST /api/verwerk`.
+  opruimscript. Pakket B (één keer echt getest met `test:flow`): T1 `/vandaag`, T2 `/interventie/[id]`,
+  T3 `/interventie/[id]/inspreken`, T4 `/bon/[id]` met server action `bevestig`, route `POST /api/verwerk`
+  (logica in `lib/route/`, testbaar met nagemaakte afhankelijkheden). Nog niet: A1.
+- **Prijzen** horen niet in de browser van de technieker: importeer in clientcode nooit `gegenereerd.ts`,
+  `valideer.ts` of `verwerk.ts` (die laden de catalogus met prijzen). `MAX_UREN` staat apart in `grenzen.ts`.
 - **Opruimen** (`scripts/opruimen.ts`): app-data herkent het aan `werfbonnen.bron` spraak of foto; alles in
   `werfbon_opnames` en de bucket is van de app. Het stopt bij twijfel. Na een test met de app: droog, dan `--echt`.
 - `next.config.ts` laadt de root-`.env` met `forceReload`: zonder dat geeft `@next/env` de eerdere lading van `web/`
@@ -103,7 +110,7 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
 
 Elke call naar de Anthropic API kost geld. Doe geen calls (`maak_cases.py` zonder bestaande teksten, `run_eval.py`
 zonder `--droog`) zonder dat de gebruiker erom vraagt, en vermeld daarna de kost. `run_eval.py --droog` en
-`score.py --zelftest` zijn gratis. `test-gevallen.ts` zonder `--droog` doet wel calls (Claude, en bij
+`score.py --zelftest` zijn gratis. `test-gevallen.ts` zonder `--droog` en `test-flow.ts --stap concept` doen wel calls (Claude, en bij
 `--invoer audio` ook Voxtral, aan $0,0035 per minuut audio). `npm --prefix web test` en `--droog` zijn gratis.
 
 ## Data-veiligheid

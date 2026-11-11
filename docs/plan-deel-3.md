@@ -1,6 +1,8 @@
 # Stap 8, deel 3: de werfbon-app in `web/`
 
-Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar, zie [Stand](#stand). Dit plan werkt deel 3 uit
+Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
+één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
+spraakopname staan nog open. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -53,7 +55,12 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 2. Huisstijl | **Klaar** |
 | 3. Testaccounts en opruimscript | **Klaar**: testaccounts op live (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4), `test:logins`, `opruimen` (droog nagekeken) |
 | 4. Inloggen | **Klaar**, met tijdelijke pagina's `/vandaag` en `/administratie` |
-| 5–11 | Nog niet begonnen |
+| 5. T1 Vandaag | **Code klaar**, queries nagekeken met `test:schermen`; schermvergelijking in de browser nog te doen |
+| 6. T2 Interventie | **Code klaar**, idem; interventie van een collega onzichtbaar (nagekeken) |
+| 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
+| 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
+| 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
+| 10–11 | Nog niet begonnen |
 
 Gedaan in pakket A, met wat erbij kwam:
 - `web/lib/supabase/`: `config.ts` (sleutels inlezen, stopt bij een publishable key op de plaats van de secret key),
@@ -79,6 +86,49 @@ Gedaan in pakket A, met wat erbij kwam:
   hoort, of een factuur die betaald of vervallen is. Na `--echt` controleert het zelf dat er niets overblijft.
   Droog op live (2026-11-12): geen app-data; met `--ook-accounts` precies de twee testgebruikers en medewerkers 4
   en 18.
+
+Gedaan in pakket B (code, nog zonder echte call of schrijven op live):
+- `lib/schermen/vandaag.ts` (kaartstatus, titels, `dagGrenzen` voor de peildatum in Belgische tijd),
+  `lib/schermen/queries.ts` (queries op een client met sessie; `laad.ts` geeft ze de cookiesessie),
+  `lib/schermen/voorstel.ts` (rijen, gele vakken, aanpassingen, `controleer` voor Bevestigen), alle met tests.
+- `lib/route/verwerk-route.ts` met injecteerbare afhankelijkheden (`afhankelijkheden.ts` = sessie voor lezen,
+  secret key voor schrijven), `bouw-bon.ts`; `app/api/verwerk/route.ts`.
+- `lib/client/useVerwerk.ts`: opladen naar de bucket met de sessie, dan de route. Foto's worden in de browser
+  verkleind tot 1600 px JPEG (ook HEIC wordt zo JPEG).
+- Schermen `/vandaag`, `/interventie/[id]`, `/interventie/[id]/inspreken`, `/bon/[id]`; server action `bevestig`.
+- `scripts/test-schermen.ts` (`npm --prefix web run test:schermen`, alleen lezen): queries van T1/T2 met de
+  testaccount, plus RLS op een interventie en opnamepad van een collega. Resultaat 2026-11-12: ALLES OK.
+- `MAX_UREN` staat nu in `lib/verwerking/grenzen.ts`, zodat de browser hem kan gebruiken zonder Ajv en de catalogus
+  (met prijzen) mee te laden. Nagekeken in de build: geen `verkoopprijs` in de clientbundels.
+
+Echte test op 2026-11-12, met akkoord (`npm --prefix web run test:flow`, zelfde code als de app, zonder browser):
+- `--stap concept`: foto van testgeval c13-wb501 met de sessie in de bucket, dan `verwerkVerzoek` met de echte
+  afhankelijkheden op interventie 1063. Route 200 in 4,0 s, bon WB-2026-00853 (concept, bron foto, 5 november):
+  1,5 u, 28 km, Temperatuursensor × 1 met citaat, forfait "Automatisch". Gelijk aan de gold van c13.
+  Eén Haiku-call: 6.069 input- en 305 outputtokens, ongeveer $0,001.
+- `--stap bevestig --bon 853`: `bevestigBon` → bon `ingegeven`, conceptfactuur FA-2026-00377 (btw 6%, € 217,
+  de jaarprijs van het contract). Read-only als administratie: totaal = `factuurvoorstel` = som van de lijnen.
+  Waarschuwing "onderdeel op onderhoudsbon, niet aangerekend: OND-SENS × 1", zoals 0003 het wil.
+- `opruimen` droog toont precies die app-data (bon 853, factuur 377, opname 2, één bestand). Nog niet opgeruimd:
+  de data dient straks voor A1 (deel 10).
+- Voor dit script staan de route-afhankelijkheden in `lib/route/afhankelijkheden-kern.ts` en het bevestigen in
+  `lib/schermen/bevestig.ts`, zonder `server-only`; de app gebruikt ze via `afhankelijkheden.ts` en de server action.
+- Niet getest met echte data: een geel vak (c13 had er geen; wel in de unit tests), het spraakpad (Voxtral) en
+  "Opnieuw inspreken" op live.
+
+Afwijkingen en keuzes in pakket B:
+- **Vervangen van een conceptbon**: eerst de nieuwe bon volledig schrijven, pas daarna de oude weg (het plan zei
+  eerst weg). Mislukt het schrijven, dan blijft het oude voorstel staan. Bleef er toch een oude staan, dan toont de
+  app de nieuwste (hoogste id).
+- **Route**: 409 als er al een bevestigde bon is; 502 bij een API-fout (opname wel bewaard). `km` wordt afgerond:
+  `werfbonnen.km` is een integer. `input_tokens` in `werfbon_opnames` telt ook de cachetokens.
+- **Bevestigen** loopt niet in één transactie (bijwerken, lijnen vervangen, `bevestig_werfbon`). Mislukt een stap,
+  dan blijft de bon een concept en kan de technieker opnieuw bevestigen.
+- **Onderhoud zonder contract**: geen forfait af te leiden; bevestigen kan, zonder forfaitlijn. De administratie
+  krijgt de waarschuwing "onderhoud zonder contract".
+- **T2**: de titel is "Onderhoud warmtepomp" (type + toestel), niet een samenvatting van de melding zoals in de
+  mockup: die bestaat niet in de data.
+- **T4**: een niet-aangerekend onderdeel blijft als grijze regel zichtbaar, met "Ongedaan maken".
 
 Afwijking van het plan: de technieker die het script koos (meeste interventies op de peildatum) heeft er maar één.
 T1 zal dus één kaart tonen, niet drie zoals in de mockup. Voor een volledig T1 is een andere keuze of extra
