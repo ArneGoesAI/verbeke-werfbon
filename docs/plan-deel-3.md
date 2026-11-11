@@ -3,7 +3,7 @@
 Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
 één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
 spraakopname staan nog open. Pakket C (delen 10–11) is gebouwd en read-only getest op live; FA-2026-00377 is op live
-goedgekeurd via het scherm; `opruimen --echt` wacht op akkoord. Zie [Stand](#stand). Dit plan werkt deel 3 uit
+goedgekeurd via het scherm, en live is weer opgeruimd. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -62,7 +62,7 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
 | 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
 | 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie` en in de browser (1360 × 900 en 390 breed, bevestigingsstap geopend en geannuleerd); FA-2026-00377 goedgekeurd via het scherm |
-| 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; status in `verbeke-data` en `opruimen --echt` nog te doen |
+| 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; `opruimen --echt` gedaan (2026-11-12); status in `verbeke-data` nog te doen |
 
 Gedaan in pakket A, met wat erbij kwam:
 - `web/lib/supabase/`: `config.ts` (sleutels inlezen, stopt bij een publishable key op de plaats van de secret key),
@@ -158,6 +158,10 @@ Gedaan in pakket C (2026-11-12):
 - Goedgekeurd op live, met akkoord (2026-11-12): FA-2026-00377 via "Goedkeuren en versturen" in het scherm. Read-only
   nagekeken: factuur `verstuurd` (€ 217 excl. btw), bon WB-2026-00853 `gefactureerd`, geen conceptfacturen meer;
   A1 toont de lege lijst.
+- Opgeruimd op live, met akkoord (2026-11-12): `opruimen` droog toonde precies bon 853, factuur 377, opname 2 en één
+  bestand; `--echt` verwijderde ze. Een tweede droge run vindt niets meer; `test:administratie` ziet 0
+  conceptfacturen. De testaccounts blijven bestaan.
+- Testscripts melden af met `scope: "local"`: de standaard ("global") beëindigde ook de sessie in de browser.
 - Keuzes: de duur van een opname staat niet in de database; de speler leest ze uit het bestand (bij webm van
   MediaRecorder soms pas na het afspelen, dan zonder duur). Een factuur met meer bonnen (alleen in oude data) toont
   de eerste bon en de waarschuwingen van alle bonnen.
