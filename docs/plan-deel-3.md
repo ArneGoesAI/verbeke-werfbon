@@ -2,8 +2,8 @@
 
 Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
 één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
-spraakopname staan nog open. Pakket C (delen 10–11) is gebouwd en read-only getest op live; goedkeuren op live en
-`opruimen --echt` wachten op akkoord. Zie [Stand](#stand). Dit plan werkt deel 3 uit
+spraakopname staan nog open. Pakket C (delen 10–11) is gebouwd en read-only getest op live; FA-2026-00377 is op live
+goedgekeurd via het scherm; `opruimen --echt` wacht op akkoord. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -61,7 +61,7 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
 | 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
 | 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
-| 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie` en in de browser (1360 × 900 en 390 breed, bevestigingsstap geopend en geannuleerd); goedkeuren op live nog te doen |
+| 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie` en in de browser (1360 × 900 en 390 breed, bevestigingsstap geopend en geannuleerd); FA-2026-00377 goedgekeurd via het scherm |
 | 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; status in `verbeke-data` en `opruimen --echt` nog te doen |
 
 Gedaan in pakket A, met wat erbij kwam:
@@ -155,6 +155,9 @@ Gedaan in pakket C (2026-11-12):
 - In de browser (2026-11-12, als administratie): breedtes van tabel en detail gelijk aan de mockup (623 en 429 px op
   1360). Factuurnummer en bedrag breken niet meer af; het menu is sticky zodat "Afmelden" in beeld blijft, en wordt
   onder 800 px een balk bovenaan.
+- Goedgekeurd op live, met akkoord (2026-11-12): FA-2026-00377 via "Goedkeuren en versturen" in het scherm. Read-only
+  nagekeken: factuur `verstuurd` (€ 217 excl. btw), bon WB-2026-00853 `gefactureerd`, geen conceptfacturen meer;
+  A1 toont de lege lijst.
 - Keuzes: de duur van een opname staat niet in de database; de speler leest ze uit het bestand (bij webm van
   MediaRecorder soms pas na het afspelen, dan zonder duur). Een factuur met meer bonnen (alleen in oude data) toont
   de eerste bon en de waarschuwingen van alle bonnen.

@@ -5,7 +5,8 @@
 //   npm --prefix web run test:administratie
 //   npm --prefix web run test:administratie -- --goedkeuren <factuur_id>
 //
-// Wachtwoorden uit .env.testaccounts; ze komen nooit op het scherm.
+// Wachtwoorden uit .env.testaccounts; ze komen nooit op het scherm. Afmelden met scope "local": "global" (de standaard)
+// zou ook de sessie in de browser beëindigen.
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -87,7 +88,7 @@ async function main() {
   controleer(count === 0, "technieker ziet geen facturen");
   const { error: weigering } = await tech.rpc("keur_factuur_goed", { p_factuur_id: lijst[0]?.id ?? 0 });
   controleer(!!weigering, `technieker kan niet goedkeuren (${weigering?.code ?? "geen fout!"})`);
-  await tech.auth.signOut();
+  await tech.auth.signOut({ scope: "local" });
 
   if (arg.goedkeuren) {
     const id = Number(arg.goedkeuren);
@@ -106,7 +107,7 @@ async function main() {
     controleer(nogEens.fout === "Deze factuur is al goedgekeurd.", "tweede keer goedkeuren wordt geweigerd");
   }
 
-  await admin.auth.signOut();
+  await admin.auth.signOut({ scope: "local" });
   console.log(fouten === 0 ? "ALLES OK" : `${fouten} fout(en)`);
   process.exit(fouten === 0 ? 0 : 1);
 }

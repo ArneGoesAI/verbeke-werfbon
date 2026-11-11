@@ -108,7 +108,7 @@ async function concept() {
   console.log(`  bon: ${JSON.stringify(bon)}`);
   controleer(bon?.status === "concept" && bon?.bron === "foto", "status concept, bron foto");
   await toonVoorstel(tech.db, tech.id, r.body.werfbon_id);
-  await tech.db.auth.signOut();
+  await tech.db.auth.signOut({ scope: "local" });
 }
 
 async function bevestig() {
@@ -133,7 +133,7 @@ async function bevestig() {
   controleer(naBon?.status === "ingegeven", `bon ${naBon?.status}, ingegeven op ${naBon?.ingegeven_op}`);
   const { count } = await tech.db.from("facturen").select("*", { count: "exact", head: true });
   controleer(count === 0, "technieker ziet geen facturen");
-  await tech.db.auth.signOut();
+  await tech.db.auth.signOut({ scope: "local" });
 
   // Read-only als administratie: de conceptfactuur volgt factuurvoorstel.
   const admin = await aanmelden("ADMINISTRATIE");
@@ -161,7 +161,7 @@ async function bevestig() {
   const { data: waarschuwingen } = await admin.db.rpc("factuurwaarschuwingen", { p_werfbon_id: bonId });
   console.log(`  waarschuwingen: ${JSON.stringify(waarschuwingen)}`);
   console.log(`  opmerkingen op de bon: ${JSON.stringify(naBon?.opmerkingen)}`);
-  await admin.db.auth.signOut();
+  await admin.db.auth.signOut({ scope: "local" });
   void bon;
 }
 
