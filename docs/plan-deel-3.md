@@ -2,7 +2,8 @@
 
 Status: in uitvoering (2026-11-12). Pakket A (delen 1–4) is klaar. Pakket B (delen 5–9) is gebouwd en de flow is
 één keer echt getest (route, Haiku, bevestigen, conceptfactuur); de schermvergelijking in de browser en een echte
-spraakopname staan nog open. Zie [Stand](#stand). Dit plan werkt deel 3 uit
+spraakopname staan nog open. Pakket C (delen 10–11) is gebouwd en read-only getest op live; goedkeuren op live en
+`opruimen --echt` wachten op akkoord. Zie [Stand](#stand). Dit plan werkt deel 3 uit
 van `verbeke-data/docs/plan-stap-8.md`. Houd het bij als een beslissing verandert.
 
 ## Context
@@ -60,7 +61,8 @@ Bevestigen (de mockup tekent hem actief), en een bevestigingsstap bij "Goedkeure
 | 7. Route `POST /api/verwerk` | **Klaar**: tests met nep-afhankelijkheden, en één echte call met een foto (`test:flow`) |
 | 8. T3 Inspreken en foto-pad | **Code klaar**; echte spraakopname in de browser en op een gsm nog te doen |
 | 9. T4 Voorstel en Bevestigen | **Klaar** via `test:flow` (zelfde code als de server action); T4 in de browser nog te bekijken |
-| 10–11 | Nog niet begonnen |
+| 10. A1 Conceptfacturen | **Code klaar**, read-only nagekeken met `test:administratie`; goedkeuren op live en de schermvergelijking in de browser nog te doen |
+| 11. Afwerking | `CLAUDE.md`, `README` en dit plan bijgewerkt; status in `verbeke-data` en `opruimen --echt` nog te doen |
 
 Gedaan in pakket A, met wat erbij kwam:
 - `web/lib/supabase/`: `config.ts` (sleutels inlezen, stopt bij een publishable key op de plaats van de secret key),
@@ -129,6 +131,30 @@ Afwijkingen en keuzes in pakket B:
 - **T2**: de titel is "Onderhoud warmtepomp" (type + toestel), niet een samenvatting van de melding zoals in de
   mockup: die bestaat niet in de data.
 - **T4**: een niet-aangerekend onderdeel blijft als grijze regel zichtbaar, met "Ongedaan maken".
+
+Gedaan in pakket C (2026-11-12):
+- `lib/schermen/waarschuwing.ts` (puur, met tests): kort label per waarschuwing ("Niet getekend", "Veel uren",
+  "Geen contract", "Onderdeel bij onderhoud", en "Uren wijken af" voor de vijfde waarschuwing van 0003, die het plan
+  niet noemde), status "Klaar" of het label van de eerste, filter en selectie uit de URL, bedragen op de cent
+  (btw = totaal excl. × tarief; de som van de lijnen dient als controle en geeft een melding als ze afwijkt), duur.
+- `lib/schermen/administratie.ts`: conceptfacturen met klant, bon, technieker, interventietype en toestel;
+  waarschuwingen via `factuurwaarschuwingen()` per bon; lijnen en de laatste opname met een signed URL (10 min);
+  `keurFactuurGoed` met leesbare fouten (al goedgekeurd, geen administratie). Via `laad-administratie.ts` met de
+  cookiesessie; `scripts/test-administratie.ts` rechtstreeks.
+- `/administratie`: menu met alleen "Conceptfacturen" en het aantal, afmelden onderaan; filters "Alle (n)" en
+  "Na te kijken (n)"; de hele rij is klikbaar (link in de eerste cel); zonder `?factuur=` het eerste in de lijst.
+  Detail met lijnen, btw, totaal, alle waarschuwingen in een geel vak, de opmerking van de technieker (daar staan de
+  niet-aangerekende onderdelen uit T4), en de opname (afspeelknop, duur uit het bestand, transcript) of de foto.
+- "Goedkeuren en versturen" vraagt eerst bevestiging (nummer, klant, totaal; "kan je hier niet ongedaan maken"), dan
+  server action `keurGoed` → `keur_factuur_goed` → terug naar de lijst met dezelfde filter.
+- `scripts/test-administratie.ts` (`npm --prefix web run test:administratie`): standaard alleen lezen; met
+  `--goedkeuren <id>` schrijft het. Resultaat op 2026-11-12, alleen lezen: ALLES OK. FA-2026-00377 (Fam. Desmet,
+  onderhoud warmtepomp, € 217 + btw 6% € 13,02 = € 230,02), totaal = som van de lijnen = `factuurvoorstel`, status
+  "Onderdeel bij onderhoud", foto te openen via de signed URL. De technieker ziet geen facturen en krijgt 42501 op
+  `keur_factuur_goed`.
+- Keuzes: de duur van een opname staat niet in de database; de speler leest ze uit het bestand (bij webm van
+  MediaRecorder soms pas na het afspelen, dan zonder duur). Een factuur met meer bonnen (alleen in oude data) toont
+  de eerste bon en de waarschuwingen van alle bonnen.
 
 Afwijking van het plan: de technieker die het script koos (meeste interventies op de peildatum) heeft er maar één.
 T1 zal dus één kaart tonen, niet drie zoals in de mockup. Voor een volledig T1 is een andere keuze of extra

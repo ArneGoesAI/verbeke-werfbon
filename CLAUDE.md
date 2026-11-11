@@ -36,6 +36,8 @@ npm --prefix web run test:logins                # beide accounts aanmelden en RL
 npm --prefix web run test:schermen              # queries van T1/T2 met de technieker (alleen lezen)
 npm --prefix web run test:flow -- --stap concept # foto → route → conceptbon (kost geld, schrijft op live)
 npm --prefix web run test:flow -- --stap bevestig --bon <id>   # bevestigen + factuur nakijken (schrijft)
+npm --prefix web run test:administratie         # A1: conceptfacturen, bedragen, opname als administratie (alleen lezen)
+npm --prefix web run test:administratie -- --goedkeuren <factuur_id>   # goedkeuren + nakijken (schrijft)
 npm --prefix web run opruimen                   # app-data op live tonen (droog); -- --echt [--ook-accounts] verwijdert
 npm --prefix web run dev                        # app op localhost:3000
 npm --prefix web run test:gevallen -- --invoer tekst,foto --uit ../eval/results/<map>   # kost geld
@@ -74,8 +76,8 @@ Datastroom: database → `eval/data/gold.jsonl` → `eval/data/cases.jsonl` + `e
 
 ## De app (`web/`)
 
-Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke-data/docs/plan-stap-8.md`. Nu is
-alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonder database, route of schermen.
+Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke-data/docs/plan-stap-8.md`. Deel 2
+(de kern van de verwerking in `web/lib/verwerking/`) en deel 3 (inloggen, schermen T1–T4 en A1, route) zijn gebouwd.
 
 - **Flow** (`verwerk.ts`): audio → Voxtral (`voxtral-mini-transcribe-3`, taal `nl`) → tekst; een foto gaat
   rechtstreeks naar Claude. Dan Haiku 5.5 op effort `medium` met hetzelfde verzoek als de eval → validatie →
@@ -98,7 +100,11 @@ alleen deel 2 gebouwd: de kern van de verwerking in `web/lib/verwerking/`, zonde
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
   opruimscript. Pakket B (één keer echt getest met `test:flow`): T1 `/vandaag`, T2 `/interventie/[id]`,
   T3 `/interventie/[id]/inspreken`, T4 `/bon/[id]` met server action `bevestig`, route `POST /api/verwerk`
-  (logica in `lib/route/`, testbaar met nagemaakte afhankelijkheden). Nog niet: A1.
+  (logica in `lib/route/`, testbaar met nagemaakte afhankelijkheden). Pakket C: A1 `/administratie` met filter en
+  selectie in de URL (`?filter=nakijken`, `?factuur=<id>`), status uit `factuurwaarschuwingen()` (korte labels en
+  bedragen in `lib/schermen/waarschuwing.ts`), queries en goedkeuren in `lib/schermen/administratie.ts`, server
+  action `keurGoed` met een bevestigingsstap. Goedkeuren zet alleen de status (`keur_factuur_goed`); er gaat geen mail
+  weg. Opname of foto via een signed URL van 10 minuten.
 - **Prijzen** horen niet in de browser van de technieker: importeer in clientcode nooit `gegenereerd.ts`,
   `valideer.ts` of `verwerk.ts` (die laden de catalogus met prijzen). `MAX_UREN` staat apart in `grenzen.ts`.
 - **Opruimen** (`scripts/opruimen.ts`): app-data herkent het aan `werfbonnen.bron` spraak of foto; alles in
