@@ -2,7 +2,8 @@ import path from "node:path";
 import { loadEnvConfig } from "@next/env";
 import type { NextConfig } from "next";
 
-// Eén .env voor de hele repo: die in de root (naast eval/). Op Vercel staan de variabelen in het project.
+// Eén .env voor de hele repo: die in de root (naast eval/). Op Vercel staan de variabelen in het project; er is daar
+// geen .env, en dan laadt dit niets (geen fout). Variabelen die al gezet zijn, overschrijft @next/env nooit.
 // forceReload: Next heeft web/ al geladen (zonder .env) en zou die lading anders uit de cache teruggeven.
 loadEnvConfig(path.resolve(process.cwd(), ".."), process.env.NODE_ENV !== "production", undefined, true);
 
