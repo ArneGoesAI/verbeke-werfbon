@@ -4,7 +4,7 @@
 // bevestig_werfbon maakt daar facturen bij. werfbon_opnames en bucket werfbon-opnames zijn helemaal van de app.
 // Bij twijfel stopt de opruiming in plaats van iets over te slaan of mee te nemen.
 
-import { TESTACCOUNTS } from "./testaccounts";
+import { ALLE_TESTMAILS } from "./testaccounts";
 
 export const APP_BRONNEN = ["spraak", "foto"] as const;
 
@@ -38,7 +38,7 @@ export class OpruimFout extends Error {}
 // Facturen die de app maakt: concept (bevestigd door de technieker) en verstuurd (goedgekeurd). Betaald of vervallen
 // komt in de app niet voor; zo'n factuur hoort niet bij een test.
 const APP_FACTUURSTATUSSEN = new Set(["concept", "verstuurd"]);
-const TESTMAILS: ReadonlySet<string> = new Set(Object.values(TESTACCOUNTS));
+const TESTMAILS: ReadonlySet<string> = new Set(ALLE_TESTMAILS);
 
 export function bepaalOpruiming(invoer: Invoer, opties: { ookAccounts: boolean }): Opruiming {
   for (const b of invoer.appBonnen) {
