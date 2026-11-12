@@ -111,6 +111,11 @@ Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke
   `werfbon_opnames` en de bucket is van de app. Het stopt bij twijfel. Na een test met de app: droog, dan `--echt`.
 - `next.config.ts` laadt de root-`.env` met `forceReload`: zonder dat geeft `@next/env` de eerdere lading van `web/`
   (zonder sleutels) uit de cache terug.
+- **Vercel** (nog niet online): Root Directory `web`, framework Next.js. `web/vercel.json` zet alle functies (pagina's,
+  route, proxy) in `fra1`. Zonder `.env` bouwt de app gewoon; de variabelen staan dan in het project: `ANTHROPIC_API_KEY`,
+  `MISTRAL_API_KEY`, `SUPABASE_SECRET_KEY` (sensitive) en `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (die twee al nodig bij de build: Next zet ze in de browsercode).
+  `DATABASE_URL` is alleen voor de eval, niet voor Vercel.
 
 ## Kosten en API-calls
 
