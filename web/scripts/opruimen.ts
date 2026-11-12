@@ -2,7 +2,7 @@
 //
 //   npm --prefix web run opruimen                          # droog
 //   npm --prefix web run opruimen -- --echt                # bonnen, facturen, opnames en bestanden weg
-//   npm --prefix web run opruimen -- --echt --ook-accounts # ook de twee testgebruikers en hun koppeling
+//   npm --prefix web run opruimen -- --echt --ook-accounts # ook de testgebruikers (ook de extra) en hun koppeling
 //
 // Wat weg gaat, staat in lib/beheer/opruimen.ts: bonnen met bron spraak of foto, de facturen die daaruit kwamen
 // (ook goedgekeurde), alle rijen in werfbon_opnames en alle bestanden in bucket werfbon-opnames. Stopt bij twijfel.

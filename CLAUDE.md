@@ -33,6 +33,8 @@ npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
 npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
 npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run testaccounts -- --extra    # technieker2@ en administratie2@verbeke.test, wachtwoorden zelf in .env.extra-accounts
+npm --prefix web run test:logins -- --extra     # de extra logins nakijken
 npm --prefix web run test:schermen              # queries van T1/T2 met de technieker (alleen lezen)
 npm --prefix web run test:flow -- --stap concept # foto → route → conceptbon (kost geld, schrijft op live)
 npm --prefix web run test:flow -- --stap bevestig --bon <id>   # bevestigen + factuur nakijken (schrijft)
