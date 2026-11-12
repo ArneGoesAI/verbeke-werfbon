@@ -97,7 +97,7 @@ Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke
   route en, via `dienst-kern.ts`, voor de scripts. `server.ts` en `dienst.ts` importeren `server-only`, zodat de
   build faalt als ze in een clientcomponent belanden.
 - **Deel 3 gebouwd** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
-  Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
+  Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4; extra: `technieker2@` → 21, `administratie2@` → 5),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
   opruimscript. Pakket B (één keer echt getest met `test:flow`): T1 `/vandaag`, T2 `/interventie/[id]`,
