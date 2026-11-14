@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  ALLE_TESTMAILS,
   type Medewerker,
   controleerKoppeling,
+  controleerWachtwoord,
   envBestand,
+  extraSjabloon,
   kiesAdministratie,
   kiesTechnieker,
+  leesEnv,
   maakWachtwoord,
 } from "./testaccounts";
 
@@ -48,7 +52,17 @@ describe("kiesTechnieker", () => {
   });
 
   it("stopt zonder kandidaat", () => {
-    expect(() => kiesTechnieker(medewerkers, [])).toThrow(/Geen actieve technieker/);
+    expect(() => kiesTechnieker(medewerkers, [])).toThrow(/Geen 1e actieve technieker/);
+  });
+
+  it("kiest op plaats 1 de volgende in de rij, en stopt als die er niet is", () => {
+    const inplanning = [
+      { interventie_id: 10, medewerker_id: 1 },
+      { interventie_id: 11, medewerker_id: 2 },
+      { interventie_id: 12, medewerker_id: 2 },
+    ];
+    expect(kiesTechnieker(medewerkers, inplanning, 1).id).toBe(1);
+    expect(() => kiesTechnieker(medewerkers, inplanning.slice(1), 1)).toThrow(/Geen 2e actieve technieker/);
   });
 });
 
@@ -59,6 +73,12 @@ describe("kiesAdministratie", () => {
 
   it("stopt zonder kandidaat", () => {
     expect(() => kiesAdministratie([m(1, "zaakvoerder")])).toThrow(/administratie/);
+  });
+
+  it("kiest op plaats 1 de tweede actieve", () => {
+    const lijst = [m(9, "administratie"), m(5, "administratie", false), m(7, "administratie")];
+    expect(kiesAdministratie(lijst, 1).id).toBe(9);
+    expect(() => kiesAdministratie(lijst, 2)).toThrow(/3e actieve/);
   });
 });
 
@@ -84,5 +104,40 @@ describe("wachtwoord en bestand", () => {
     const inhoud = envBestand({ technieker: "aaa", administratie: "bbb" });
     expect(inhoud).toContain("TECHNIEKER_EMAIL=technieker@verbeke.test\nTECHNIEKER_WACHTWOORD=aaa");
     expect(inhoud).toContain("ADMINISTRATIE_WACHTWOORD=bbb");
+  });
+});
+
+describe("extra logins", () => {
+  it("leest het sjabloon terug, met lege wachtwoorden", () => {
+    const env = leesEnv(extraSjabloon());
+    expect(env.TECHNIEKER_EMAIL).toBe("technieker2@verbeke.test");
+    expect(env.ADMINISTRATIE_EMAIL).toBe("administratie2@verbeke.test");
+    expect(env.TECHNIEKER_WACHTWOORD).toBe("");
+  });
+
+  it("houdt een = in een wachtwoord", () => {
+    expect(leesEnv("A=b=c\n# X=y\n").A).toBe("b=c");
+    expect(leesEnv("# X=y").X).toBeUndefined();
+  });
+
+  it("weigert een leeg, kort of door spaties omgeven wachtwoord, zonder de waarde te tonen", () => {
+    expect(() => controleerWachtwoord("", "W")).toThrow(/leeg/);
+    expect(() => controleerWachtwoord("kort-geheim", "W")).toThrow(/12 tekens/);
+    expect(() => controleerWachtwoord(" lang-genoeg-geheim", "W")).toThrow(/spatie/);
+    try {
+      controleerWachtwoord("kort-geheim", "W");
+    } catch (e) {
+      expect((e as Error).message).not.toContain("kort-geheim");
+    }
+    expect(controleerWachtwoord("lang-genoeg-geheim", "W")).toBe("lang-genoeg-geheim");
+  });
+
+  it("opruimen kent alle vier de testlogins", () => {
+    expect(ALLE_TESTMAILS).toEqual([
+      "technieker@verbeke.test",
+      "administratie@verbeke.test",
+      "technieker2@verbeke.test",
+      "administratie2@verbeke.test",
+    ]);
   });
 });

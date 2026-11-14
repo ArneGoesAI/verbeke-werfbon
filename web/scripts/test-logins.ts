@@ -2,24 +2,25 @@
 // Alleen lezen. Wachtwoorden uit .env.testaccounts (scripts/testaccounts.ts); ze komen nooit op het scherm.
 //
 //   npm --prefix web run test:logins
+//   npm --prefix web run test:logins -- --extra   # de extra logins uit .env.extra-accounts
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { parseArgs } from "node:util";
 
 import nextEnv from "@next/env";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 
+import { leesEnv } from "../lib/beheer/testaccounts";
 import { bestemmingVoorRol } from "../lib/rol";
 import { publiekeConfig } from "../lib/supabase/config";
 import { REPO } from "../lib/verwerking/testhulp";
 
 nextEnv.loadEnvConfig(REPO);
 // .env.testaccounts hoort niet bij de bestanden die @next/env laadt: zelf inlezen.
-const bestand = Object.fromEntries(
-  readFileSync(path.join(REPO, ".env.testaccounts"), "utf8")
-    .split("\n")
-    .filter((r) => r.includes("=") && !r.startsWith("#"))
-    .map((r) => [r.slice(0, r.indexOf("=")), r.slice(r.indexOf("=") + 1)]),
+const { values: opties } = parseArgs({ options: { extra: { type: "boolean", default: false } } });
+const bestand = leesEnv(
+  readFileSync(path.join(REPO, opties.extra ? ".env.extra-accounts" : ".env.testaccounts"), "utf8"),
 );
 
 const { url, publiekeSleutel } = publiekeConfig();

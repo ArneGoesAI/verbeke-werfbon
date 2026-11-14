@@ -26,11 +26,13 @@ const volledig: Invoer = {
   gebruikers: [
     { id: "u-tech", email: "technieker@verbeke.test" },
     { id: "u-adm", email: "administratie@verbeke.test" },
+    { id: "u-tech2", email: "technieker2@verbeke.test" },
     { id: "u-echt", email: "iemand@voorbeeld.be" },
   ],
   koppelingen: [
     { medewerker_id: 18, auth_user_id: "u-tech" },
     { medewerker_id: 4, auth_user_id: "u-adm" },
+    { medewerker_id: 21, auth_user_id: "u-tech2" },
     { medewerker_id: 2, auth_user_id: "u-echt" },
   ],
 };
@@ -50,10 +52,10 @@ describe("bepaalOpruiming", () => {
     expect(o.ontkoppelMedewerkers).toEqual([]);
   });
 
-  it("neemt met --ook-accounts alleen de twee testgebruikers mee", () => {
+  it("neemt met --ook-accounts alleen de testgebruikers mee, ook de extra", () => {
     const o = bepaalOpruiming(volledig, { ookAccounts: true });
-    expect(o.gebruikerIds).toEqual(["u-tech", "u-adm"]);
-    expect(o.ontkoppelMedewerkers).toEqual([4, 18]);
+    expect(o.gebruikerIds).toEqual(["u-tech", "u-adm", "u-tech2"]);
+    expect(o.ontkoppelMedewerkers).toEqual([4, 18, 21]);
   });
 
   it("stopt bij een bon die geen app-bon is", () => {
@@ -85,6 +87,6 @@ describe("samenvatting", () => {
   it("toont aantallen en korte lijsten", () => {
     const tekst = samenvatting(bepaalOpruiming(volledig, { ookAccounts: true }));
     expect(tekst).toContain("werfbonnen (+ lijnen)       2  (901, 902)");
-    expect(tekst).toContain("testgebruikers              2  (u-tech, u-adm)");
+    expect(tekst).toContain("testgebruikers              3  (u-tech, u-adm, u-tech2)");
   });
 });

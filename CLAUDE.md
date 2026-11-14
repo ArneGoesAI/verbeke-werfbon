@@ -33,6 +33,8 @@ npm --prefix web run typecheck
 npm --prefix web run test:gevallen -- --droog   # testgevallen door de kern, zonder API-call
 npm --prefix web run testaccounts               # twee testaccounts op live (schrijft); wachtwoorden in .env.testaccounts
 npm --prefix web run test:logins                # beide accounts aanmelden en RLS nakijken (alleen lezen)
+npm --prefix web run testaccounts -- --extra    # technieker2@ en administratie2@verbeke.test, wachtwoorden zelf in .env.extra-accounts
+npm --prefix web run test:logins -- --extra     # de extra logins nakijken
 npm --prefix web run test:schermen              # queries van T1/T2 met de technieker (alleen lezen)
 npm --prefix web run test:flow -- --stap concept # foto → route → conceptbon (kost geld, schrijft op live)
 npm --prefix web run test:flow -- --stap bevestig --bon <id>   # bevestigen + factuur nakijken (schrijft)
@@ -95,7 +97,7 @@ Next.js (App Router, TypeScript), later op Vercel in `fra1`. Stap 8 van `verbeke
   route en, via `dienst-kern.ts`, voor de scripts. `server.ts` en `dienst.ts` importeren `server-only`, zodat de
   build faalt als ze in een clientcomponent belanden.
 - **Deel 3 gebouwd** (plan en stand: `docs/plan-deel-3.md`, houd het bij; ontwerp in `docs/ontwerp/`). Gebouwd: de Supabase-clients.
-  Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4),
+  Ook al: testaccounts (`technieker@verbeke.test` → medewerker 18, `administratie@verbeke.test` → medewerker 4; extra: `technieker2@` → 21, `administratie2@` → 5),
   inloggen (`/login`, `proxy.ts`, doorsturen per rol in `lib/rol.ts` en `lib/sessie.ts`), met tijdelijke pagina's
   `/vandaag` en `/administratie`; huisstijl (`components/`, `lib/opmaak.ts`, `/huisstijl` in ontwikkeling);
   opruimscript. Pakket B (één keer echt getest met `test:flow`): T1 `/vandaag`, T2 `/interventie/[id]`,

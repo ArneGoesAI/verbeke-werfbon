@@ -9,25 +9,62 @@
 // Idempotent: een bestaande testgebruiker krijgt een nieuw wachtwoord, een bestaande koppeling blijft.
 // De wachtwoorden komen in .env.testaccounts in de repo-root (valt onder .env.* in .gitignore), nooit op het scherm.
 // Opruimen: scripts/opruimen.ts --ook-accounts.
+//
+//   npm --prefix web run testaccounts -- --extra
+//
+// Twee extra logins met zelfgekozen wachtwoorden: technieker2@verbeke.test (de volgende technieker in dezelfde rij)
+// en administratie2@verbeke.test (de tweede actieve administratie). De wachtwoorden komen uit .env.extra-accounts in
+// de repo-root; bestaat dat niet, dan maakt het script een leeg sjabloon en stopt het. Het bestand wordt nooit
+// overschreven en de wachtwoorden komen nooit op het scherm. Test daarna met test:logins -- --extra.
 
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { parseArgs } from "node:util";
 
 import nextEnv from "@next/env";
 
 import {
+  EXTRA_ACCOUNTS,
   type Inplanning,
   type Medewerker,
   type Soort,
   TESTACCOUNTS,
   controleerKoppeling,
+  controleerWachtwoord,
   envBestand,
+  extraSjabloon,
   kiesAdministratie,
   kiesTechnieker,
+  leesEnv,
   maakWachtwoord,
 } from "../lib/beheer/testaccounts";
 import { maakDienstClient } from "../lib/supabase/dienst-kern";
 import { REPO } from "../lib/verwerking/testhulp";
+
+const { values: opties } = parseArgs({ options: { extra: { type: "boolean", default: false } } });
+const extra = opties.extra ?? false;
+const accounts = extra ? EXTRA_ACCOUNTS : TESTACCOUNTS;
+const plaats = extra ? 1 : 0;
+const extraBestand = path.join(REPO, ".env.extra-accounts");
+
+/** Met --extra: de zelfgekozen wachtwoorden, nagekeken vóór er iets naar de database gaat. */
+function leesExtraWachtwoorden(): Record<Soort, string> {
+  if (!existsSync(extraBestand)) {
+    writeFileSync(extraBestand, extraSjabloon(), { mode: 0o600 });
+    throw new Error(`${extraBestand} aangemaakt. Vul de twee wachtwoorden in en draai opnieuw. Niets aangepast.`);
+  }
+  const env = leesEnv(readFileSync(extraBestand, "utf8"));
+  for (const soort of ["technieker", "administratie"] as const) {
+    const sleutel = `${soort.toUpperCase()}_EMAIL`;
+    if (env[sleutel] !== EXTRA_ACCOUNTS[soort]) {
+      throw new Error(`${sleutel} in .env.extra-accounts moet ${EXTRA_ACCOUNTS[soort]} zijn. Niets aangepast.`);
+    }
+  }
+  return {
+    technieker: controleerWachtwoord(env.TECHNIEKER_WACHTWOORD, "TECHNIEKER_WACHTWOORD"),
+    administratie: controleerWachtwoord(env.ADMINISTRATIE_WACHTWOORD, "ADMINISTRATIE_WACHTWOORD"),
+  };
+}
 
 nextEnv.loadEnvConfig(REPO);
 const db = maakDienstClient();
@@ -62,6 +99,8 @@ async function zetGebruiker(email: string, wachtwoord: string): Promise<string> 
 }
 
 async function main() {
+  // Eerst de wachtwoorden: een fout erin stopt alles voor er iets gelezen of geschreven wordt.
+  const extraWachtwoorden = extra ? leesExtraWachtwoorden() : null;
   const { data: peildatum, error: e1 } = await db.rpc("peildatum");
   if (e1) stop("peildatum()", e1);
 
@@ -86,8 +125,8 @@ async function main() {
   );
 
   const gekozen: Record<Soort, Medewerker> = {
-    technieker: kiesTechnieker(medewerkers, inplanning),
-    administratie: kiesAdministratie(medewerkers),
+    technieker: kiesTechnieker(medewerkers, inplanning, plaats),
+    administratie: kiesAdministratie(medewerkers, plaats),
   };
   console.log(`Peildatum ${peildatum}: technieker = medewerker ${gekozen.technieker.id} ` +
     `(${inplanning.filter((r) => r.medewerker_id === gekozen.technieker.id).length} interventies), ` +
@@ -95,15 +134,15 @@ async function main() {
 
   // Eerst alle controles, pas dan schrijven: een bezette koppeling stopt alles voor er iets verandert.
   for (const soort of ["technieker", "administratie"] as const) {
-    const bestaand = await zoekGebruiker(TESTACCOUNTS[soort]);
+    const bestaand = await zoekGebruiker(accounts[soort]);
     controleerKoppeling(gekozen[soort], bestaand ?? "nog-niet-aangemaakt");
     const elders = medewerkers.find((m) => bestaand && m.auth_user_id === bestaand && m.id !== gekozen[soort].id);
-    if (elders) throw new Error(`${TESTACCOUNTS[soort]} hangt al aan medewerker ${elders.id}. Gestopt.`);
+    if (elders) throw new Error(`${accounts[soort]} hangt al aan medewerker ${elders.id}. Gestopt.`);
   }
 
-  const wachtwoorden = { technieker: maakWachtwoord(), administratie: maakWachtwoord() };
+  const wachtwoorden = extraWachtwoorden ?? { technieker: maakWachtwoord(), administratie: maakWachtwoord() };
   for (const soort of ["technieker", "administratie"] as const) {
-    const gebruikerId = await zetGebruiker(TESTACCOUNTS[soort], wachtwoorden[soort]);
+    const gebruikerId = await zetGebruiker(accounts[soort], wachtwoorden[soort]);
     if (gekozen[soort].auth_user_id !== gebruikerId) {
       const { error } = await db
         .from("medewerkers")
@@ -115,6 +154,10 @@ async function main() {
     }
   }
 
+  if (extra) {
+    console.log(`Wachtwoorden uit ${extraBestand} gezet.`);
+    return;
+  }
   const bestand = path.join(REPO, ".env.testaccounts");
   writeFileSync(bestand, envBestand(wachtwoorden), { mode: 0o600 });
   console.log(`Wachtwoorden geschreven naar ${bestand}`);
